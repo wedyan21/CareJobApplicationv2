@@ -1,0 +1,546 @@
+﻿@model IEnumerable<CareJobApplicationv2.Models.Jobs>
+
+@{
+    ViewData["Title"] = "Candidates";
+}
+@****
+@ViewData["mysql2"]
+<br/>
+@ViewData["JobAppliedLList"]
+<br/>
+@ViewData["JobAppliedLListToList"]
+<br/>
+ 
+    *@
+
+
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+
+
+<div class="col-lg-12">
+  <div class="card  card-border-none bg-light-care mb-3">
+    <div class="card-body">
+    <form>
+       <div class="row job-search-bar">
+            <div class="col-lg-3">
+                
+                        <input type="text" class="form-control form-control-sm" id="serachJobTitle" placeholder="Enter Job Title">
+                    
+            </div>
+            <div class="col-lg-3">
+                
+                       @Html.DropDownList("JobCategoriesId", null, "-- Select Job Category --", htmlAttributes: new { @class = "form-select form-select-sm" })
+                   
+            </div>
+            <div class="col-lg-3">
+                
+                      @Html.DropDownList("JobLocationList", null, "-- Select Job Location --", htmlAttributes: new { @class = "form-select form-select-sm" })
+                    
+            </div>
+            
+             
+            <div class="col-lg-3">
+                
+                         <button id="clearSearch" type="button" class="btn btn-sm btn-outline-primary form-control">Clear Search</button>
+                   
+            </div>
+       </div>
+        
+     </form>
+    </div>
+   </div>
+</div>
+@{
+    
+    if(ViewBag.JobAppliedLList >0)
+    {
+        
+    <div class="col-lg-12">
+            
+                <div class="card  card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                         <table id="JobListTable" class="table table-responsive table-care ">
+                                                <thead class="table-hader-care">
+                                                    <tr>
+                                                        <th>
+                                                        </th>
+                                                        <th>
+                                                            
+                                                                @Html.DisplayNameFor(model => model.JobTitle)
+                                                            
+                                                        </th>
+                                
+                                
+                                                        <th>
+                                                                @Html.DisplayNameFor(model => model.PublishDate)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.Deadline)
+                                                        </th>
+                                
+                                                        <th>
+                                                            Location
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.Categories)
+                                                        </th>
+                                                        <th>
+                                    
+                                                        </th>
+                                                   
+                                
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                        @{
+                            foreach (var item in ViewBag.JobAppliedLListToList)
+                            {
+                               <tr >
+                                    <td>
+
+
+                                    </td>
+                                    <td class="fw-bold">
+                                            @item.JobTitle
+                                    </td>
+                                    <td class="text-sm">
+                                    @Convert.ToString(string.Format("{0:dd-MM-yyyy}", item.PublishDate))
+                                   
+                                    </td>
+                                    <td class="text-sm">
+                                        @Convert.ToString(string.Format("{0:dd-MM-yyyy}",item.Deadline))
+                                    </td>
+                                    <td class="text-sm">
+                                        @item.BranchTitleEn
+                                    </td>
+                                    <td class="text-sm">
+                                        @item.CategoryNameEn
+                                    </td>
+                                
+                                    <td>
+
+                                        <a asp-action="Details " class="btn btn-sm btn-outline-primary" asp-route-id="@item.Id">Details</a>
+                                        <!--a asp-action="" class="btn btn-sm btn-outline-primary">Apply</a-->
+
+                                        @if (item.Buser.cuser != null && item.Buser.cuser == ViewBag.CUser)
+                                        {
+                                            int CompareDateresult = DateTime.Compare(item.Deadline, DateTime.Now);
+                                            if (CompareDateresult > 0)
+                                            {
+                                                @Html.ActionLink("Update", "EditeApply", new { JobId = item.Id }, new { @class = "btn btn-sm btn-warning" })
+                                            }
+
+
+                                            @Html.ActionLink("Withdraw", "Withdraw", new { JobId = item.Id }, new { @class = "btn btn-sm btn-danger" })
+
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("Apply", "Apply", new { JobId = item.Id }, new { @class = "btn btn-sm btn-success" })
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                         </tbody>
+                       </table>
+                
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-action="ClosedJobs" class="btn btn-outline-primary">Search for Closed positions</a>
+                    </div>
+
+                </div>
+     </div>
+
+     @****
+     <div class="row">
+            
+                <div class="card  card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                       <table id="JobListTable" class="table table-responsive table-care ">
+                                                <thead class="table-hader-care">
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        
+                                                        <th>JobTitle</th>
+                                                        <th>PublishDate</th>
+                                                        <th>Deadline</th>
+                                                        <th>Location</th>
+                                                        <th>Category</th>
+                                                        <th>cuser</th>
+                                                        <th></th>
+                                                        
+                                                    </tr>
+                                                </thead>
+                              <tbody>
+                              </tbody>
+                       </table>
+                    </div>
+
+                </div>
+                <div class="card-footer text-center">
+                        <a asp-action="ClosedJobs" class="btn btn-outline-primary">Search for Closed positions</a>
+                    </div>
+     </div>
+     ****@
+ }else{
+
+     <div class="row">
+            
+                <div class="card  card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                        <table id="JobListTable" class="table table-responsive table-care ">
+                            <thead class="table-hader-care">
+                                <tr>
+                                    <th>
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.JobTitle)
+                                    </th>
+                                
+                                
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.PublishDate)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Deadline)
+                                    </th>
+                                
+                                    <th>
+                                        Location
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Categories)
+                                    </th>
+                                    <th>
+                                    
+                                    </th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                        @foreach (var item in Model) {
+                              TimeSpan? openPositions = DateTime.Now - item.Deadline ;
+                            // TimeSpan? Difference = DateTime.Now - item.PublishDate;
+                        
+
+                            var bgtr = "#fefefe";
+                        
+                            if (openPositions.Value.Days < 0)
+                            {
+                                bgtr = "#f7fbb6";
+                            }
+
+
+                                <tr style="background:@bgtr">
+                                    <td>
+
+
+                                    </td>
+                                    <td class="fw-bold">
+                                        @Html.DisplayFor(modelItem => item.JobTitle)
+                                    </td>
+
+                                
+                                    <td class="text-sm">
+                                    
+                                        @Convert.ToString(string.Format("{0:dd-MM-yyyy}", item.PublishDate))
+                                    </td>
+                                    <td class="text-sm">
+                                   
+                                        @Convert.ToString(string.Format("{0:dd-MM-yyyy}", item.Deadline))
+                                    </td>
+
+                                    <td class="text-sm">
+                                        @Html.DisplayFor(modelItem => item.Branchs.BranchTitleEn )
+                                    </td>
+                                    <td class="text-sm">
+                                        @Html.DisplayFor(modelItem => item.Categories.CategoryNameEn )
+                                    </td>
+                                
+                                    <td>
+                                    
+                                       <a asp-action="Details" class="btn btn-sm btn-outline-primary" asp-route-id="@item.Id">Details</a>
+                                       <!--a asp-action="" class="btn btn-sm btn-outline-primary">Apply</a-->
+                                       @Html.ActionLink("Apply", "Apply", new { JobId = item.Id }, new { @class = "btn btn-sm btn-outline-primary" })
+                                    </td>
+
+                                </tr>
+                        
+                        }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-action="ClosedJobs" class="btn btn-outline-primary">Search for Closed positions</a>
+                    </div>
+
+                </div>
+        
+     </div>
+     }
+ }
+
+  @section Scripts
+{
+
+                        <link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css"/>
+ 
+                        <script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+
+
+
+
+
+
+                        <script type="text/javascript">
+                            var Popup, dataTable;
+
+
+                            $(document).ready(function () {
+
+
+
+                                function convertJsonDateToShortDate(data) {
+                                    // This function converts a json date to a short date
+                                    // e.g. /Date(1538377200000)/ to 10/1/2018
+
+                                    const dateValue = new Date(parseInt(data.substr(6)));
+                                    console.log("Date " + dateValue);
+                                    return dateValue.toLocaleDateString('en-GB');
+                                }
+                                function ApplyButton(user,Id){
+                                    var applybtn;
+                                    if(user !=null){
+                                        Applybtn = '<a class="btn btn-sm btn-danger m-1" href="/Home/UnApply?JobId='+Id+'">UnApply</a>';
+                                    }else{
+                                        Applybtn = '<a class="btn btn-sm btn-success m-1" href="/Home/Apply?JobId='+Id+'">Apply</a>';
+                                    }
+                                    return Applybtn;
+                                }
+                                var dataToSend = {};
+                                 var TableColumns =[
+                                                            {"data":"id"},
+                                                            
+                                                           {"data":"jobTitle"},
+                                                            {"data":"publishDate"},
+                                                            {"data":"deadline"},
+                                                            {"data":"location"},
+                                                            {"data":"category"},
+                                                            {"data":"buser.cuser"},
+                                                            {"render":function(data, type, row){
+                                                                        var applybtn = ApplyButton(row.buser.cuser,row.id);
+                                                                        console.log("applybtn: "+applybtn);
+                                                                    return '<a class="btn btn-sm btn-outline-primary m-1" href="/Home/Details/'+row.id+'">Details</a>'+applybtn  }}
+                                                            
+                                                            
+                    
+
+                                                       ];
+                                InitDataTable('JobListTable1', 'GetOpenPositions', TableColumns);
+
+                                function InitDataTable(TableId, AjaxUrl, myColumns){
+                                       // console.log('I am in DataTable ('+TableId +')');
+                                       //GetOpenPositions
+                                        $("#"+TableId ).DataTable(
+                                          {
+                                              "dom": 'Blrtip',
+                                            "serverSide": true,
+                                            "filter":true,
+                                            "processing": true,
+                                            "bInfo" : false,
+                                            "paging": false,
+                                            "ordering": false,
+                                            "searching": true,
+                                            "ajax":{
+                            
+                                                        "url" :"/Home/"+AjaxUrl,
+                                                        "type":"GET",
+                                                        "dataType":"json",
+                                                        "dataSrc":function (json) {
+                                                                     console.log(json);
+                                                                     console.log(json.value);
+                                                                     return json.value;
+                                                                },
+                                                        "complete": function(xhr, responseText){
+                                                                console.log(xhr);
+                                                                console.log(responseText); //*** responseJSON: Array[0]
+                                                            }
+                                                        
+                           
+                           
+                                                    },
+                                            "columnDefs": [
+                                                        {
+                                                            "targets": [0,-2],
+                                                            "visible": false,
+                                                            "searchable": false
+                                                        }
+                                                    ],
+                
+                                           "columns":myColumns ,
+               
+
+                                            
+
+                                        })
+                                    }
+                               // dataTable2 = $('#JobListTable1').DataTable();
+                                dataTable = $('#JobListTable').DataTable({
+                                    "dom": 'Blrtip',
+                                    /*
+                                    scrollX: true,
+                                    
+                                    fixedColumns: {
+                                        leftColumns: 1,
+
+                                    },*/
+                                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+
+                                    "columnDefs": [
+                                        {
+                                            "targets": [0],
+                                            "data": null,
+                                            "defaultContent": "",
+                                            "className": "select-checkbox custom-control custom-checkbox",
+                                            "orderable": false
+                                        },
+
+
+                                        {
+                                            
+                                           // "targets": [-1],
+                                           // "visible": false
+                                            
+                                        }
+
+
+                                    ],
+
+                                    "dom": 'Bfrtip',
+                                    "buttons": [
+                                        {
+                                            extend: 'copy',
+                                            text: '<i class="fa fa-copy"></i> Copy',
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'excel',
+                                            text: '<i class="fa fa-file-excel-o"></i> Excel',
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'pdf',
+                                            text: '<i class="fa  fa-file-pdf-o"></i> Pdf',
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'print',
+                                            text: '<i class="fa fa-print"></i> Print',
+                                            exportOptions: {
+                                                columns: ':visible'
+                                            }
+                                        },
+                                        {
+                                            extend: 'selectAll',
+
+                                        },
+                                        {
+                                            extend: 'selectNone',
+
+                                        }
+                                    ],
+
+                                    //select: true
+                                    select: {
+                                        style: 'multiple',
+                                        selector: 'td:first-child'
+                                    }
+
+                                })
+
+                                $('#serachJobTitle').on('keyup', function () {
+                                    dataTable
+                                        .columns(1)
+                                        .search(this.value)
+                                        .draw();
+                                });
+                                // Location search
+                                $('#JobLocationList').on('change', function () {
+                                    console.log("Search by Location ");
+                                    if ($(this).val() != null && $(this).val() != "") {
+
+                                        dataTable
+                                            .columns(4)
+                                            .search("^" + $(this).val() + "$", true, false, true)
+                                            .draw();
+                                    } else {
+                                        dataTable
+                                            .columns(4)
+                                            .search("")
+                                            .draw();
+                                    }
+                                    
+                                });
+                                //JobCategoriesId
+                                $('#JobCategoriesId').on('change', function () {
+                                    console.log("Search by Category ");
+                                    if ($(this).val() != null && $(this).val() != "") {
+
+                                        dataTable
+                                            .columns(5)
+                                            .search("^" + $(this).val() + "$", true, false, true)
+                                            .draw();
+                                    } else {
+                                        dataTable
+                                            .columns(5)
+                                            .search("")
+                                            .draw();
+                                    }
+
+                                   
+                                });
+
+                                //JobStatus
+                                $('#JobStatus').on('change', function () {
+                                    if ($(this).val() != null && $(this).val() != "") {
+
+                                        dataTable
+                                            .columns(-1)
+                                            .search("^" + $(this).val() + "$", true, false, true)
+                                            .draw();
+                                    } else {
+                                        dataTable
+                                            .columns(-1)
+                                            .search("")
+                                            .draw();
+                                    }
+
+
+                                });
+                                $('#clearSearch').click(function () {
+
+                                    dataTable.search('')
+                                        .columns().search('')
+                                        .draw();
+                                    $('#serachJobTitle').val('');
+                                    $('#JobLocationList').val('');
+                                    $('#JobCategoriesId').val('');
+                                    $('#JobStatus').val('');
+                                });
+                            })
+
+                        </script>
+
+                    }

@@ -1,0 +1,81 @@
+﻿@model CareJobApplicationv2.Models.ApplicantEducations
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddEditApplicantEducation</title>
+</head>
+<body>
+
+<h4>ApplicantEducations</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddEditApplicantEducation">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EducationDegreeId" class="control-label"></label>
+                <select asp-for="EducationDegreeId" class ="form-control" asp-items="ViewBag.EducationDegreeId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="EducationMajorId" class="control-label"></label>
+                <input asp-for="EducationMajorId" class="form-control" />
+                <span asp-validation-for="EducationMajorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CountryEducation" class="control-label"></label>
+                <input asp-for="CountryEducation" class="form-control" />
+                <span asp-validation-for="CountryEducation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InstitutionEn" class="control-label"></label>
+                <input asp-for="InstitutionEn" class="form-control" />
+                <span asp-validation-for="InstitutionEn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InstitutionAr" class="control-label"></label>
+                <input asp-for="InstitutionAr" class="form-control" />
+                <span asp-validation-for="InstitutionAr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="YearOfStarting" class="control-label"></label>
+                <input asp-for="YearOfStarting" class="form-control" />
+                <span asp-validation-for="YearOfStarting" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="YearOfFinished" class="control-label"></label>
+                <input asp-for="YearOfFinished" class="form-control" />
+                <span asp-validation-for="YearOfFinished" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <input asp-for="UserId" class="form-control" />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

@@ -1,0 +1,381 @@
+﻿@using CareJobApplicationv2.Models
+@using Newtonsoft.Json.Linq;
+@using Newtonsoft.Json;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "All Applicants by Position";
+}
+
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+<h3>@ViewData["Title"]</h3>
+<div class="col-lg-12">
+    <div class="card  card-border-none bg-light-care mb-3">
+        <div class="card-body">
+
+            <table class="table table-responsive table-care">
+                <thead class="table-hader-care">
+                    <tr>
+                        <th>Position</th>
+                        <th>Branch</th>
+                        <th>Category</th>
+                        <th>PublishDate</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th># Candidates</th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Position</td>
+                            <td>@item.Branch</td>
+                            <td>@item.Category</td>
+                            <td>@Convert.ToDateTime(item.PublishDate).ToString("yyyy-MM-dd")</td>
+                            <td>@Convert.ToDateTime(item.Deadline).ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <span class="shadow-sm p-2 rounded " style="background:@item.StatusColor; border:1px solid #838383; font-size:9pt; ">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>
+                                @{
+                                    if (item.CountApplicants > 0)
+                                    {
+
+                                        <a asp-action="JobCandidates" class="btn btn-primary" asp-route-JobId="@item.Id"><i class="fa-regular fa-user"></i> @item.CountApplicants</a>
+
+                                    }
+                                    if (item.CountCandidates > 0)
+                                    {
+
+                                        <a asp-action="JobCandidateScores" class="btn btn-warning" asp-route-JobId="@item.Id"><i class="fa-solid fa-list-check"></i>@item.CountCandidates</a>
+
+                                    }
+                                    if (item.CountShortlist != null)
+                                    {
+                                        var ff = item.CountShortlist;
+                                        JArray array = JArray.Parse(ff);
+                                        <a asp-action="FinalJobCandidateAnalysis" class="btn btn-success" asp-route-JobId="@item.Id"><i class="fa-solid fa-arrow-up-short-wide"></i>@array.Count() </a>
+
+                                    }
+                                    if (item.CountInterViewList > 0)
+                                    {
+
+                                        <a asp-action="InterViewList" class="btn btn-primary" asp-route-JobId="@item.Id"><i class="fa-regular fa-handshake"></i> @item.CountInterViewList </a>
+
+                                    }
+                                    if (item.HasWinner != null)
+                                    {
+
+                                        <a asp-action="JobCandidates" class="btn btn-outline-success" asp-route-JobId="@item.HasWinner"><i class="fa-regular fa-face-smile"></i> </a>
+
+                                    }
+                                    
+                                }
+                            </td>
+
+
+                        </tr>
+                                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card  card-border-none bg-light-care mb-3">
+            <h4 class="card-header"> Positions By Branch</h4>
+            <div class="card-body">
+                @{
+                    if (ViewBag.JobsByBranchList.Count > 0)
+                    {
+                        <canvas id="JobsByBranch" width="100" style="max-height:300px"></canvas>
+
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card  card-border-none bg-light-care mb-3">
+            <h4 class="card-header"> Positions By Category</h4>
+            <div class="card-body">
+                @{
+                    if (ViewBag.JobsByCategoryList.Count > 0)
+                    {
+                        <canvas id="JobsByCategory" width="100" style="max-height:300px"></canvas>
+
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card  card-border-none bg-light-care mb-3">
+            <h4 class="card-header"> Positions By Status</h4>
+            <div class="card-body">
+                @{
+                    if (ViewBag.JobStatuse > 0)
+                    {
+                        <canvas id="JobsByStatus" width="100" style="max-height:300px"></canvas>
+
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        /*
+                            const ctx = document.getElementById('myChart').getContext('2d');
+                            const myChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                    datasets: [{
+                                        label: '# of Votes',
+                                        data: [12, 19, 3, 5, 2, 3],
+                                        backgroundColor: [
+                                            'rgba(255, 99, 132, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)'
+                                        ],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+         */
+    </script>
+
+    <script>
+        var bgtrans = "0.2";
+        //var ctx = $("#myChart").get(0).getContext("2d");
+        var canvas = document.getElementById("JobsByBranch");
+        var ctx = canvas.getContext('2d');
+        var backgroundColor = ["rgba(54, 162, 235," + bgtrans + ")",
+        "rgba(255, 99, 132," + bgtrans + ")",
+        "rgba(255, 159, 64," + bgtrans + ")",
+        "rgba(255, 205, 86," + bgtrans + ")",
+        "rgba(75, 192, 192," + bgtrans + ")",
+        "rgba(153, 102, 255," + bgtrans + ")",
+        "rgba(201, 203, 207," + bgtrans + ")",
+        "rgba(128,0,0," + bgtrans + ")",
+        "rgba(255,127,80," + bgtrans + ")",
+        "rgba(255,140,0," + bgtrans + ")",
+        "rgba(240,230,140," + bgtrans + ")",
+        "rgba(135,206,235," + bgtrans + ")"
+        ];
+
+        var options = {
+            title: {
+                display: true,
+                text: 'Total Applicants By Governorate',
+                position: 'top'
+            },
+            responsive: true,
+            // maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        offsetGridLines: true
+                    },
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 90,
+                        minRotation: 90
+                    }
+                }]
+            },
+            tooltips: {
+                enabled: false
+            },
+            hover: {
+                animationDuration: 0
+            },
+            /*
+            animation: {
+                duration: 1,
+                onComplete: function () {
+                    var chartInstance = this.chart,
+                        ctx = chartInstance.ctx;
+                        ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+
+                    this.data.datasets.forEach(function (dataset, i) {
+                        var meta = chartInstance.controller.getDatasetMeta(i);
+                        meta.data.forEach(function (bar, index) {
+                            var data = dataset.data[index];
+                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                        });
+                    });
+                }
+            }
+            */
+        };
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CandidatesManagement/JobsByBranch",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                console.log(chData);
+                var aData = chData;
+                console.log("=========================");
+                console.log(aData.branch);
+                var aLabels = aData[0];
+                var aDatasets1 = aData[1];
+                var dataT = {
+                    labels: aLabels,
+                    datasets: [{
+                        label: "# Positions",
+                        data: aDatasets1,
+                        fill: false,
+                        backgroundColor: "rgba(227,111,30,0.2)", //["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
+                        borderColor: "rgba(227,111,30,0.8)",//["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                        borderWidth: 1
+                    }]
+                };
+
+                //const ctx = document.getElementById('myChart').getContext('2d');
+
+                var myNewChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: dataT,
+                    options: options,
+
+                });
+            }
+        });
+        /**************************************************************************************************************** */
+
+        var canvas2 = document.getElementById("JobsByCategory");
+        var ctx2 = canvas2.getContext('2d');
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CandidatesManagement/JobsByCategory",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                console.log(chData);
+                var aData = chData;
+                console.log("=========================");
+                console.log(aData.branch);
+                var aLabels = aData[0];
+                var aDatasets1 = aData[1];
+                var dataT = {
+                    labels: aLabels,
+                    datasets: [{
+                        label: "# Positions",
+                        data: aDatasets1,
+                        fill: false,
+                        backgroundColor: "rgba(227,111,30,0.2)", //["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
+                        borderColor: "rgba(227,111,30,0.8)",//["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                        borderWidth: 1
+                    }]
+                };
+
+                //const ctx = document.getElementById('myChart').getContext('2d');
+
+                var JobsByCategory = new Chart(ctx2, {
+                    type: 'bar',
+                    data: dataT,
+                    options: options,
+
+                });
+            }
+        });
+
+        /**************************************************************************************************************** */
+
+        var canvas3 = document.getElementById("JobsByStatus");
+        var ctx3 = canvas3.getContext('2d');
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CandidatesManagement/JobsByStatus",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (chData) {
+                console.log(chData);
+                var aData = chData;
+                console.log("=========================");
+                console.log(aData.branch);
+                var aLabels = aData[0];
+                var aDatasets1 = aData[1];
+                var dataT = {
+                    labels: aLabels,
+                    datasets: [{
+                        label: "# Positions",
+                        data: aDatasets1,
+                        fill: false,
+                        backgroundColor: "rgba(227,111,30,0.2)", //["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
+                        borderColor: "rgba(227,111,30,0.8)",//["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                        borderWidth: 1
+                    }]
+                };
+
+                //const ctx = document.getElementById('myChart').getContext('2d');
+
+                var JobsByStatus = new Chart(ctx3, {
+                    type: 'bar',
+                    data: dataT,
+                    options: options,
+
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,77 @@
+﻿@model CareJobApplicationv2.Models.ApplicantReferee
+
+@{
+    
+    Layout = null;
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        
+        <form asp-action="CreateApplicantReferee" method="post" onsubmit="return SubmitRefereeForm(this)">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="RefereeFirstNameEn" class="control-label"></label>
+                        <input asp-for="RefereeFirstNameEn" class="form-control" />
+                        <span asp-validation-for="RefereeFirstNameEn" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="RefereeLastNameEn" class="control-label"></label>
+                        <input asp-for="RefereeLastNameEn" class="form-control" />
+                        <span asp-validation-for="RefereeLastNameEn" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="RefereeOrganizationEn" class="control-label"></label>
+                        <input asp-for="RefereeOrganizationEn" class="form-control" />
+                        <span asp-validation-for="RefereeOrganizationEn" class="text-danger"></span>
+                    </div>
+                 </div>
+                <div class="col-lg-6">
+                     <div class="form-group">
+                        <label asp-for="RefereeJobTitleEn" class="control-label"></label>
+                        <input asp-for="RefereeJobTitleEn" class="form-control" />
+                        <span asp-validation-for="RefereeJobTitleEn" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+           
+             <div class="row mt-2 mb-2">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="RefereePrimaryPhone" class="control-label"></label>
+                        <input asp-for="RefereePrimaryPhone" class="form-control" />
+                        <span asp-validation-for="RefereePrimaryPhone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="RefereeEmail" class="control-label"></label>
+                        <input asp-for="RefereeEmail" class="form-control" />
+                        <span asp-validation-for="RefereeEmail" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <input type="submit" value="Add new Referee" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

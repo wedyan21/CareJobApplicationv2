@@ -1,0 +1,23 @@
+﻿@model CareJobApplicationv2.Models.ApplicantApplyForJob
+
+@{
+    ViewData["Title"] = "Withdraw";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+
+<div class="alert alert-danger text-center m-5 border-1 border-danger rounded-3">
+    <h1>Withdraw</h1>
+    <h5>Are you sure you want to withdraw from this job position?</h5>
+    <h3>@Html.DisplayFor(model => model.Job.JobTitle)</h3>
+    <h3>@Html.DisplayFor(model => model.Id)</h3>
+
+
+    <form asp-action="Withdraw">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Yes I want to Withdraw" class="btn btn-danger" /> |
+        <a class="btn btn-outline-primary" asp-action="Index"> No return back to List</a>
+    </form>
+</div>

@@ -1,0 +1,359 @@
+﻿@using CareJobApplicationv2.Models
+
+@{
+    ViewData["Title"] = "Candidates";
+    int CJobId = ViewBag.JobId;
+}
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@*ViewData["mysql2"]
+<br/>
+@ViewData["mysql1"]
+<br/>
+@ViewData["mysql3"]
+<br/>
+@ViewData["mysql4"]
+<br/>
+@foreach (var item in ViewBag.t)
+    {
+        <li>@item.Degree</li>
+
+    }
+  
+}
+*@
+
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+
+<div class="row m-5">
+    <div class="col-md-3">
+        <input type="button" onclick="getLongList()" class="btn btn-primary" value="Create LongList" />
+    </div>
+
+
+</div>
+
+
+<div class="col-lg-12">
+  <div class="card  card-border-none bg-light-care mb-3">
+    <div class="card-body">
+
+        <table id="JobCandidates" class="table table-responsive table-care">
+            <thead class="table-hader-care">
+                <tr>
+                    <th>Job</th>
+                    <th>UserId</th>
+                    <th >Name</th>
+                    <th>Gender</th>
+                    
+                    <th>Major</th>
+                    <th>Degree</th>
+                    <th>Languages</th>
+                    <th>Experiance</th>
+                    <th>Form</th>
+                    <th></th>
+            
+                </tr>
+            </thead>
+                 @foreach (var item in ViewBag.mysql3) {
+                            <tr uid="@item.UserId">
+                                <td>@item.JobId</td>
+                                <td>@item.UserId </td>
+                                 <td>@item.FullNameEn </td>
+                                 <td>@item.GenderId</td>
+                                 @*
+                                 <td>@string.Join(" , ",@item.EducationDegree ) </td>
+                                 <td>@string.Join(" , ",@item.EducationMajor ) </td>
+                         
+                         
+                                 <td>@item.Major.Count </!td>
+                                 <td>@item.Degree.Count </td>*@
+                                 <td>
+                                      @{
+                                          if (item.EducationDegree.Count > 0)
+                                          {
+                                              foreach (var i in item.EducationDegree)
+                                              {
+                                                                <div class="col-md-12 ctelement ">
+                                                                    <div class="row">
+                                                                        <div class="col-md-8 " >
+                                                                            <span class="">@i.Degree</span>
+                                                                        </div>
+                                                                        <div class="col-md-4 " >
+                                                                            <span class="educationScore-@i.Score">@i.Score</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                              }
+
+                                          }
+
+                                        }
+                                 </td>
+                                 <td>
+                                      @{
+                                          if (item.EducationMajor.Count > 0)
+                                          {
+                                              foreach (var i in item.EducationMajor)
+                                              {
+                                                                <div class="col-md-12 ctelement">@i.Major</div>
+
+                                              }
+
+                                          }
+
+                                        }
+                                 </td>
+                                 <td>
+                                      @{
+                                          //, @i.ReadingLevel, @i.WritingLevel)
+                                          if (item.Languages.Count > 0)
+                                          {
+                                              foreach (var i in item.Languages)
+                                              {
+                                                                <div class="col-md-12 ctelement ">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 " > 
+                                                                            <b>@i.LanguageName</b>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <span class="Langlevel-@i.SpeakingLevel">(S: @i.SpeakingLevel )</span>
+                                                                            <span class="Langlevel-@i.ReadingLevel">( R: @i.ReadingLevel )</span>
+                                                                            <span class="Langlevel-@i.WritingLevel">( W: @i.WritingLevel)</span>
+                                                                        </div>
+                                                                    </div> 
+                                                                </div>
+
+                                              }
+
+                                          }
+
+                                        }
+                                 </td>
+                                 <td>
+                            
+                            @{
+                                //, @i.ReadingLevel, @i.WritingLevel)
+                                if (item.ExperienceList.Count > 0)
+                                {
+                                    TimeSpan? Difference;
+                                    int myPeriod = 0;
+                                    string yperiod = " - ";
+                                    string SC = "";
+                                    foreach (var ex in item.ExperienceList)
+                                    {
+                                        Difference = null;
+                                        if (ex.EndDate != null && ex.StartDate != null)
+                                        {
+                                            Difference = (ex.EndDate - ex.StartDate);
+                                            if (Difference.Value.Days > 0)
+                                            {
+                                                if (Difference.Value.Days > 365)
+                                                {
+
+                                                    myPeriod = Difference.Value.Days / 365;
+                                                    yperiod = myPeriod + " Years";
+
+                                                    SC = (myPeriod > 3) ? "exp-3" : "exp-2";
+                                                }
+                                                else
+                                                {
+                                                    myPeriod = Difference.Value.Days;
+                                                    yperiod = myPeriod + " Days";
+
+                                                    SC = "exp-1";
+                                                }
+                                            }
+
+
+
+                                        }
+
+
+                                        <div class="col-md-12 ctelement ">
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                    <b>@ex.Position</b>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <span class="@SC p-1">@yperiod </span>
+                                                </div>
+                                             </div>    
+                                         </div>
+
+                                    }
+
+                                }
+
+                                        }
+                                 </td>
+                                 <td>
+                                   
+                                     @item.JobFormData
+                                 </td>
+                                <td class="text-center selectToList">
+                                    <!--input type="checkbox" /-->
+                                    
+                                    @{ var chck = "";
+                                        if (item.IsLongList == true)
+                                        {
+                                            chck = "checked";
+                                            
+                                        }
+
+
+                                    }
+                                    <label class="switch">
+                                        <input type="checkbox" @chck>
+                                        <span class="slider"></span>
+                                    </label>
+                                </td>
+                            </tr>
+
+
+
+                 }
+            <tbody>
+
+
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+ @section Scripts
+{
+
+ <link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css"/>
+ 
+  <script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+
+  <script type="text/javascript">
+                           // var Popup, dataTable;
+
+     function getLongList() {
+         alert("Long");
+         var LongListArray = [];
+         $('#JobCandidates tr.Longtlisted-item').each(function (index, tr) {
+
+             console.log($(this).find('td.selectToList'));
+             console.log($(this).find('td.selectToList').find('input:checkbox').attr('Checked'));
+             console.log($(this));
+             if ($(this).attr('uid') != undefined) {
+                 LongListArray.push($(this).attr('uid'));
+             }
+
+
+
+         });
+         console.log(LongListArray)
+         console.log(JSON.stringify(LongListArray));
+        // AddLongList(parseInt(@CJobId), LongListArray)
+         $.ajax({
+             type: "POST",
+             url: "/CandidatesManagement/CreateLongList/",
+             data: {
+                 JobId: parseInt(@CJobId),
+                 LongList: JSON.stringify(LongListArray),
+
+
+             },
+             success: function (result) {
+                 console.log(result);
+                 $("#JobCandidates").DataTable().ajax.reload();
+             },
+             error: function (req, status, error) {
+                 console.log(status);
+                 console.log(error);
+             }
+         })
+     }
+
+     function AddLongList(CJobId, LongListArray) {
+         if (CJobId != 0 && LongListArray != null) {
+             console.log("CJobId: " + CJobId);
+             console.log("LongListArray: " + LongListArray);
+         }
+     }
+
+
+     $(document).ready(function () {
+         $('#JobCandidates tr').each(function (index, tr) {
+
+             $(this).closest('tr').find(':checkbox').prop('checked', this.checked);
+             if ($(this).closest('tr').find(':checkbox').prop('checked') == true) {
+                 console.log("vvvvvvvvvvvvvvv");
+                 console.log(this);
+                 console.log("vvvvvvvvvvvvvvv");
+
+                 $(this).closest('tr').addClass('Longtlisted-item');
+             } else {
+                 $(this).closest('tr').removeClass('Longtlisted-item');
+             }
+             /*
+             if ($(this).closest('tr').hasClass('Longtlisted-item')) {
+                 $(this).closest('tr').removeClass('Longtlisted-item');
+             } else {
+                 $(this).closest('tr').addClass('Longtlisted-item');
+             }
+             */
+
+         });
+
+         $(':checkbox').on('change', function () {
+
+              $(this).closest('tr').find(':checkbox').prop('checked', this.checked);
+             if ($(this).closest('tr').hasClass('Longtlisted-item')) {
+                 $(this).closest('tr').removeClass('Longtlisted-item');
+              } else {
+                 $(this).closest('tr').addClass('Longtlisted-item');
+          }
+
+
+                                });
+
+                               //$('#JobCandidates').dataTable();
+                                $('#JobCandidates').DataTable({
+
+                                    "columnDefs": [
+                                                        {
+                                                            "targets": [0,1],
+                                                            "visible": false,
+                                                            "searchable": false
+                                                        },
+                                                        {
+                                                            "target":[-2],
+                                                           "render": function (data, type, row) {
+                                                                    console.log($.parseJSON(row[8]));
+                                                                    var mydata = $.parseJSON(row[8]);
+                                                                    console.log(mydata.length);
+                                                                    var CFA = "";
+                                                                    if(mydata.length>0){
+                                                                        $.each(mydata, function(key,value) {
+                                                                           CFA = CFA + '<div class="col-md-12 ctelement "><b>'+value.label +':</b> '+value.userData+'</div>';
+                                                                          console.log(value.name +": "+value.userData);
+                                                                        });
+
+                                                                    }
+                                                                    console.log(" ============================================ ");
+                                                                    console.log(data);
+
+                                                                return CFA;
+                                                            }
+                                                        }
+                                                    ],
+                                });
+
+                            } );
+  </script>
+
+}

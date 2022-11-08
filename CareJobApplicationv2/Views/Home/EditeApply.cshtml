@@ -1,0 +1,135 @@
+﻿@model CareJobApplicationv2.Models.ApplicantApplyForJob
+
+
+@{
+    ViewBag.Title = "Apply";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string fData = ViewBag.JobFormData;
+
+}
+
+@if (ViewBag.Result != null)
+{
+    <div class="alert-success">
+        <h4>@ViewBag.Result</h4>
+    </div>
+}
+else
+{
+
+<form asp-action="EditeApply" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id"  />
+    <input type="hidden" asp-for="JobId" />
+    <div class="col-md-12 p-5">
+        @Html.AntiForgeryToken()
+
+        @*Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+
+        <div class="row">
+            <div class="col-md12">
+                <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-uppercase text-primary">You are  Appling For Job:</h6>
+                        <h3>@ViewBag.JobTitleEn</h3>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md12">
+                <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body text-center">
+                        <p>Note: You can update your profile any time </p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        @if (fData != null)
+        {
+            //jobformval = true;
+            //fData = Model.JobForm;
+            <div class="row">
+                <div class="col-md12">
+                    <div class="card shadow-none card-border-none bg-light-care mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-uppercase text-primary">Job Custom Form </h6>
+                            <input type="hidden" id="JobFormData" name="JobFormData" />
+
+                            <div class="fb-render">
+                                <textarea id="FormTemplate">@fData</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+
+
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-12 text-center">
+                    <input type="submit" id="SaveForm" value="Apply" class="btn btn-primary" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+}
+
+
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+
+</div>
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+
+    <script>
+      jQuery(function($) {
+          var fbTemplate = document.getElementById('FormTemplate');
+	      $('.fb-render').formRender({
+		    dataType: 'json',
+		    formData: fbTemplate.value
+	      });
+
+
+          console.log(window.JSON.stringify($('.fb-render').formRender("userData")));
+          document.getElementById('SaveForm').addEventListener('click', function() {
+                 //console.log(window.JSON.stringify($('.fb-render').formRender("userData")));
+                 $('#JobFormData').val(window.JSON.stringify($('.fb-render').formRender("userData")));
+                // $('#JobForm').html(formBuilder.actions.getData('json'));
+                 console.log('JobForm befor: '+$('#JobFormData').val());
+                 alert("Hellow");
+            });
+	    });
+
+        $('form').submit(function(event) {
+            //console.log('JobForm befor: '+$('#JobForm').val());
+           // console.log('JobForm html: '+$('#JobForm').html());
+            alert('hi submit');
+        });
+
+    </script>
+
+}

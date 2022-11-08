@@ -1,0 +1,851 @@
+﻿@using CareJobApplicationv2.Models
+@using Newtonsoft.Json;
+@using Newtonsoft;
+@using Newtonsoft.Json.Linq;
+
+@{
+    ViewData["Title"] = "Candidates";
+    var FTHDT = ViewBag.FTHDT;
+    var CurrentJobId = ViewBag.JobId;
+
+    var CDataEvaluation = ViewData["DataEvaluation"];
+    
+    if(ViewData["DataEvaluation"] != null)
+    {
+        CDataEvaluation = ViewBag.DataEvaluation.EvaluationProccess;
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+
+
+
+
+<div class="row m-5">
+    <div class="col-md-3">
+        <input type="button" onclick="getShortList2()" class="btn btn-primary" value="Create ShortList" />
+    </div>
+
+
+</div>
+<table id="CDTS" class="table table-responsive table-care table-bordered">
+    <thead class="table-hader-care">
+        <tr>
+            @*<th style="display: none;">Job</th>
+                <th style="display: none;">UserId</th>*@
+            <th>Name</th>
+            <th>Gender</th>
+
+            <th>Major</th>
+            <th>Degree</th>
+            <th>Languages</th>
+            <th>Experiance</th>
+            <!--th rowspan="">Form</th-->
+            @{
+
+
+                // var f = Json.Serialize(ViewBag.FTHDT);
+                foreach (var item in FTHDT)
+                {
+                    <th>@item.label</th>
+                };
+
+
+
+            }
+            <th>Total Ranking 100%</th>
+            <th>Short Listed</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                @*<td rowspan="2" style="display: none;">@item.JobId</td>
+                    <td rowspan="2" style="display: none;">@item.UserId</td>*@
+                <th rowspan="2">@item.FullNameEn</th>
+                <th rowspan="2">@item.GenderId</th>
+
+                <td>
+
+
+                    @{
+                        int HEDscore = 0;
+                        if (item.EducationDegree.Count > 0)
+                        {
+                            foreach (var i in item.EducationDegree)
+                            {
+                                <div class="col-md-12 ctelement">
+                                    @i.Degree
+                                </div>
+                                HEDscore = (i.Score > HEDscore) ? i.Score : HEDscore;
+
+                            }
+
+
+
+                        }
+
+
+                    }
+                </td>
+                <td>
+
+                    @{
+                        int HEMscore = 0;
+
+                        if (item.EducationMajor.Count > 0)
+                        {
+                            foreach (var i in item.EducationMajor)
+                            {
+                                <div class="col-md-12 ctelement">@i.Major</div>
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                <td>
+                    @{
+                        int HSelectedLanguageScor = 0;
+                        //, @i.ReadingLevel, @i.WritingLevel)
+                        if (item.Languages.Count > 0)
+                        {
+                            foreach (var i in item.Languages)
+                            {
+
+                                <div class="col-md-12 ctelement ">
+                                    <div class="row">
+                                        <div class="col-md-12 ">
+                                            <b>@i.LanguageName</b>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <span class="Langlevel-@i.SpeakingLevel rounded-3">S</span>
+                                            <span class="Langlevel-@i.ReadingLevel rounded-3">R</span>
+                                            <span class="Langlevel-@i.WritingLevel rounded-3">w</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                if (@i.LanguageName == "English")
+                                {
+
+                                    HSelectedLanguageScor = (Convert.ToInt32(i.SpeakingLevel) + Convert.ToInt32(i.ReadingLevel) + Convert.ToInt32(i.WritingLevel)) / 3;
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                <td>
+                    @{
+                        //, @i.ReadingLevel, @i.WritingLevel)
+                        if (item.ExperienceList.Count > 0)
+                        {
+                            TimeSpan? Difference;
+                            int myPeriod = 0;
+                            string yperiod = " - ";
+                            string SC = "";
+                            foreach (var ex in item.ExperienceList)
+                            {
+                                Difference = null;
+                                if (ex.EndDate != null && ex.StartDate != null)
+                                {
+                                    Difference = (ex.EndDate - ex.StartDate);
+                                    if (Difference.Value.Days > 0)
+                                    {
+                                        if (Difference.Value.Days > 365)
+                                        {
+
+                                            myPeriod = Difference.Value.Days / 365;
+                                            yperiod = myPeriod + " Years";
+
+                                            SC = (myPeriod > 3) ? "exp-3" : "exp-2";
+                                        }
+                                        else
+                                        {
+                                            myPeriod = Difference.Value.Days;
+                                            yperiod = myPeriod + " Days";
+
+                                            SC = "exp-1";
+                                        }
+                                    }
+
+
+
+                                }
+
+
+                                <div class="col-md-12 ctelement ">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <b>@ex.Position</b>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <span class="@SC p-1 rounded-3">@yperiod </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                @{
+
+                    var FormTHDTData = item.JobFormData;
+                    dynamic dynJsonData = JsonConvert.DeserializeObject(FormTHDTData);
+                    // var f = Json.Serialize(ViewBag.FTHDT);
+                    foreach (var formdata in dynJsonData)
+                    {
+                        <td>
+                            @formdata.userData[0]
+                        </td>
+                    };
+
+
+
+                }
+                <td></td>
+                <td></td>
+
+            </tr>
+            <tr class="row-scores" data-uid="@item.UserId">
+
+
+
+                <td class="text-center scoreTD">
+
+                    <input class="scoreTextfield EducationDegreeScore" name="EducationDegreeScore" type="number" value="@HEDscore" min="0" max="4" size="6" style="width:70px" />
+                </td>
+                <td class="text-center scoreTD">
+
+                    <input class="scoreTextfield Score-EducationMajor" name="Score-EducationMajor" type="number" value="@HEMscore" min="0" max="4" size="6" style="width:70px" />
+                </td>
+                <td class="text-center scoreTD">
+
+                    <input class="scoreTextfield Score-LanguageSkills" name="Score-LanguageSkills" type="number" value="@HSelectedLanguageScor" min="0" max="4" size="6" style="width:70px" />
+                </td>
+                <td class="text-center scoreTD">
+
+                    <input class="scoreTextfield Score-Experiance" name="Score-Experiance" type="number" value="0" min="0" max="4" size="6" style="width:70px" />
+                    @{
+
+
+
+                        foreach (var formdata in dynJsonData)
+                        {
+                        <td class="text-center scoreTD">
+
+                            <input class="scoreTextfield Score-@formdata.label" name="Score-@formdata.label" type="number" value="0" min="0" max="4" size="6" style="width:70px" />
+                        </td>
+                    };
+
+
+
+                    }
+
+                    <td class="text-center">
+
+                        <input class="totalScores Score-TotalRanking" type="text" value="" disabled size="6" />
+                    </td>
+                    <td class="text-center">
+                        <!--input type="checkbox" /-->
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+
+                </tr>
+
+            }
+    </tbody>
+</table>
+
+@section Scripts
+{
+
+    <link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+
+    <script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+
+
+
+
+
+    <script type="text/javascript">
+        var EvaluationProccess
+        /****** ******* Create ShortList */
+
+        $(':checkbox').on('change', function () {
+           // alert("checked");
+            $(this).closest('tr').find(':checkbox').prop('checked', this.checked);
+            if ($(this).closest('tr').hasClass('shortlisted-item')) {
+                $(this).closest('tr').removeClass('shortlisted-item');
+            } else {
+                $(this).closest('tr').addClass('shortlisted-item');
+            }
+
+
+        });
+
+        function getLastEvaluation(cid, cjid, EvaluationProccess) {
+
+            var LastProcess = EvaluationProccess;
+            if (LastProcess != null) {
+                $('#CDTS tr.row-scores').each(function (index, tr) {
+                    var cuid = $(this).attr('data-uid');
+                    var tr = $(this);
+
+                    for (var i = 0; i < LastProcess.length; i++) {
+                        console.log(i + ":  " + LastProcess[i].CandidateId);
+                        if (LastProcess[i].CandidateId == cuid) {
+                            //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                            //console.log(cuid);
+                            //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                            //console.log(tr.attr('data-uid'));
+                            //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                            tr.addClass("shortlisted-item");
+                            tr.closest('tr').find(':checkbox').prop('checked', true);
+                            //console.log(tr.closest('tr').find(':checkbox').prop('checked'));
+
+                            if (LastProcess[i].EvaluationScores != null) {
+                                //console.log("EvaluationScores length: " + LastProcess[i].EvaluationScores.length);
+                                var totalScores = tr.find('input.totalScores').val();
+                                //console.log('Total: ' + totalScores);
+                                var getTotal = 0;
+                                for (var j = 0; j < LastProcess[i].EvaluationScores.length; j++) {
+                                    //console.log("field: " + LastProcess[i].EvaluationScores[j].fieldName + " Value: " + LastProcess[i].EvaluationScores[j].fieldValue);
+                                    $(tr).find('td.scoreTD').each(function (index, td) {
+
+                                        if (LastProcess[i].EvaluationScores[j].fieldName == $(this).find('input').attr('name')) {
+                                            //console.log($(this).find('input').attr('name'));
+                                            // $(this).find('input').attr('name').val(LastProcess[i].EvaluationScores[j].fieldValue);
+                                            //console.log($(this).find('input').val());
+                                            $(this).find('input').val(LastProcess[i].EvaluationScores[j].fieldValue);
+                                            getTotal += parseInt($(this).find('input').val());
+                                        }
+
+                                    });
+
+                                }
+                                tr.find('input.totalScores').val(getTotal);
+                            }
+                        }
+                    }
+
+
+                });
+
+            }
+        }
+
+        function getShortList2() {
+            var EvaluatorObject = new Object();
+            var uid;
+            var AllEvaluation = [];
+            var i = 0;
+            var shortListItem = {};
+            var ScoreObject = new Object();
+            $('#CDTS tr.shortlisted-item').each(function (index, tr) {
+                i++;
+                uid = $(this).attr('data-uid');
+                var scoresArray = [];
+                var obj = {};
+                //if (this.hasClass('shortlisted-item')) {
+                    $(tr).find('td.scoreTD').each(function (index, td) {
+                        if (typeof $(this).find('input.scoreTextfield').attr('name') != 'undefined' && typeof $(this).find('input.scoreTextfield').val() != 'undefined') {
+                            console.log('====== shortlisted-item ======= ');
+                            obj = { 'fieldName': $(this).find('input.scoreTextfield').attr('name'), 'fieldValue': parseInt($(this).find('input.scoreTextfield').val()) }
+                            scoresArray.push(obj);
+                        }
+
+
+                        //console.log(td);
+
+
+                    });
+                    console.log(' ====== scoresArray ======= ');
+                    console.log(uid);
+
+
+               // }
+                EvaluatorObject.uid = uid;
+                EvaluatorObject.scores = scoresArray;
+                console.log(scoresArray);
+                shortListItem = { 'CandidateId': uid, 'EvaluationScores': scoresArray };
+                AllEvaluation.push(shortListItem)
+
+            });
+            console.log('====== i ======= ');
+            console.log(i);
+            console.log('====== All shortlisted-items ======= ');
+            console.log(AllEvaluation);
+
+            AddEvaluatorList(@CurrentJobId, AllEvaluation);
+        }
+
+
+        function AddEvaluatorList(JobId, EvaluationProccess) {
+            //alert("Remove" + langId);
+            console.log('=======================');
+            console.log(EvaluationProccess);
+            console.log('=======================');
+            var mydata = { 'JobId': JobId, 'EvaluationProccess': EvaluationProccess };
+            $.ajax({
+                type: "POST",
+                url: "/CandidatesManagement/ShortListByEvaluator/",
+               data: {
+                        JobId: JobId,
+                        EvaluationProccess: JSON.stringify(EvaluationProccess),
+
+
+                    },
+                success: function (result) {
+                    console.log(result);
+                    $("#ApplicantEducation").DataTable().ajax.reload();
+                },
+                error: function (req, status, error) {
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+
+
+        }
+
+        function getShortList() {
+            var EvaluatorObject = new Object();
+            var uid;
+            var AllEvaluation = [];
+            var i = 0;
+            var ScoreObject = new Object();
+            $('#CDTS .shortlisted-item').each(function () {
+               // alert("row");
+                uid = $(this).attr('data-uid');
+                var scoresArray = [];
+                var obj = {};
+
+                $(this).find('td').each(function () {
+                    i++;
+
+                    console.log("---- " + $(this).find('input.scoreTextfield').val());
+
+                    if ($(this).find('checkbox').hasClass('scoreTextfield')) {
+                        console.log("---- " + $(this).find('input.scoreTextfield').val());
+                        getRowTotal += parseInt($(this).find('input.scoreTextfield').val());
+
+                        ScoreObject.fieldName = $(this).find('input.scoreTextfield').attr('name');
+                        ScoreObject.fieldValue = parseInt($(this).find('input.scoreTextfield').val());
+
+
+                    }
+
+                    if (typeof $(this).find('input.scoreTextfield').attr('name') != 'undefined' && typeof $(this).find('input.scoreTextfield').val() != 'undefined') {
+                        let obj = { 'fieldName': $(this).find('input.scoreTextfield').attr('name'), 'fieldValue': parseInt($(this).find('input.scoreTextfield').val()) }
+                        scoresArray.push(obj);
+                    }
+
+
+
+
+                });
+
+                EvaluatorObject.uid = $(this).attr('data-uid');
+                EvaluatorObject.scores = scoresArray;
+
+                AllEvaluation.push(EvaluatorObject)
+
+            });
+            console.log("========= i ===========");
+            console.log(i);
+            console.log("========= AllEvaluation ===========");
+            console.log(AllEvaluation);
+            console.log("========= EvaluationProccess ===========");
+            EvaluationProccess = AllEvaluation;
+            console.log(EvaluationProccess);
+            var candidatesEvaluators = new Object();
+            candidatesEvaluators.JobId = @CurrentJobId;
+            candidatesEvaluators.EvaluationProccess = AllEvaluation;
+
+
+
+           // AddEvaluatorList(@CurrentJobId, EvaluationProccess);
+
+
+        }
+
+
+        /**************************** */
+        var oldData;
+        function getTotalScoreField(td) {
+
+            var totalScore = 0;
+
+            var tr = td.closest('tr');
+
+
+
+        }
+
+
+        function getTotalScore(countTdScores, tr) {
+            var totalScore = 0;
+            var totalScore2 = 0;
+            for (var i = 0; i < countTdScores; i++) {
+                var checkValu = tr.find("td").eq(i).find('input').val();
+               // console.log(" checkValu: " + checkValu);
+                if (isNaN(checkValu)) {
+                    checkValu = 0;
+                   // alert("NaN");
+                }
+                if (checkValu !== null || checkValu !=="") {
+                    totalScore += parseInt(tr.find("td").eq(i).find('.scorefield').text());
+                    totalScore2 += parseInt(checkValu, 10);
+                   // console.log(tr.find("td").eq(i).find('input').val());
+                   // console.log(" total Scores2: " + totalScore2);
+                }
+
+            }
+            console.log(" total Scores: " + totalScore2);
+            return totalScore2;
+        }
+        //--->make div editable > start
+        $(document).on('change', '.row_data', function (event) {
+            event.preventDefault();
+            //alert("change");
+
+            var gg = getTotalScoreField(this.closest('tr'));
+            //getTotalScoreField(this.closest('tr'));
+        });
+        $("input ").change(function () {
+
+            //console.log($(this).parent().parent().find('td .Score-EducationMajor').val());
+            $(this).parent().parent().each(function () {
+                //$(this).each('td', function () {
+                //console.log($(this).find('tr.row-scores').find('td').find('input .scoreTextfield').val());
+                //console.log($(this).find('td').find('input').val());
+
+
+            });
+            $(this).parent().parent().each(function () {
+                var getTotal = 0;
+                $.each(this.cells, function () {
+                    if ($(this).find('input').hasClass('scoreTextfield')) {
+                       // console.log("---- " + $(this).find('input.scoreTextfield').val());
+                        getTotal += parseInt($(this).find('input.scoreTextfield').val());
+                    }
+                    $(this).find('input.totalScores').val(getTotal);
+                   // console.log($(this).find('input.scoreTextfield').val());
+                });
+            });
+        });
+        $(document).on('click', '.scoreTextfield', function (event) {
+            event.preventDefault();
+            $(this).closest('td').addClass('bg-warning').css('padding', '2px');
+        });
+        $(document).on('focusout', '.scoreTextfield', function (event) {
+            event.preventDefault();
+
+            $(this).closest('td').removeClass('bg-warning') //add bg css
+                .css('padding', '')
+        });
+        $(document).on('click', '.row_data', function (event) {
+            event.preventDefault();
+             oldData = $(this).text();
+            if ($(this).attr('edit_type') == 'button') {
+                return false;
+            }
+
+            //make div editable
+            $(this).closest('div').attr('contenteditable', 'true');
+            //add bg css
+            $(this).addClass('bg-warning').css('padding', '1px');
+
+            $(this).focus();
+        })
+        //--->make div editable > end
+        //--->save single field data > start
+        /***
+        $(document).on('focusout', '.row_data', function (event) {
+            event.preventDefault();
+
+            if ($(this).attr('edit_type') == 'button') {
+                return false;
+            }
+
+            var row_id = $(this).closest('tr').attr('row_id');
+
+            var row_div = $(this)
+                .removeClass('bg-warning') //add bg css
+                .css('padding', '1px');
+
+            var col_name = row_div.attr('col_name');
+            var col_val = row_div.html();
+
+            var arr = {};
+            arr[col_name] = col_val;
+
+            //use the "arr"	object for your ajax call
+            $.extend(arr, { row_id: row_id });
+
+            //out put to show
+            $('.post_msg').html('<pre class="bg-success">' + JSON.stringify(arr, null, 2) + '</pre>');
+
+        })
+        ***/
+        //--->save single field data > end
+
+
+        // var Popup, dataTable;
+        var editor;
+        $(document).ready(function () {
+
+            var ProccesStatus = "@ViewBag.IsNewProccess";
+
+
+            if (ProccesStatus.toLowerCase() == "false") {
+              //  alert("New");
+                $.ajax({
+                        url: '@Url.Action("GetEvaluationDataByUser", "CandidatesManagement")',
+                        data: {'JobId': @CurrentJobId},
+                        type: "GET",
+                        success: function (result) {
+                        
+                        var cid = result.Idl
+                        var cjid = result.JobId;
+                        var EvaluationProccess = $.parseJSON(result.evaluationProccess);
+                        // Call function to change scores as saved last evaluation by user
+                        getLastEvaluation(cid, cjid, EvaluationProccess);
+                            },
+                        error: function (req, status, error) {
+                                console.log("hhhhhhhhhhhhhhhhhhhhhhhh");
+                                console.log(status);
+                                console.log(error);
+                                console.log("hhhhhhhhhhhhhhhhhhhhhhhh");
+                            }
+                    });
+            }else{
+               // alert("Old");
+            }
+
+        });
+        $(document).ready(function () {
+
+
+            $('#CDTS1').DataTable({
+
+            });
+            $('#CDTS .row-scores').each(function (data) {
+                //alert($(this).html());
+                //cells = rows[i].getElementsByTagName('col_name');
+                var customerId = $(this).find("td").eq(2).html();
+                var rows = $('.row-scores').length;
+                var s = $(this).find('td').find('.scorefield').length;
+                var c = $(this).find('td').find('div').text();
+                var x = 0;
+
+                var getRowTotal = 0;
+                $(this).find('td').each(function () {
+                    if ($(this).find('input').hasClass('scoreTextfield')) {
+
+                        getRowTotal += parseInt($(this).find('input.scoreTextfield').val());
+                    }
+
+                });
+                $(this).find('input.totalScores').val(getRowTotal);
+               // console.log("XXXX " + $(this).find('input.totalScores').val());
+
+                /***************
+                $(this).find('td').each(function () {
+                    if (parseInt($(this).find('.scorefield').text()) != null) {
+                        x = x + parseInt($(this).find('.scorefield').text());
+                        //console.log(parseInt($(this).find('div').text()));
+                       // console.log(x);
+                    }
+                    $(this).find('.totalScores').text(x) ;
+                });
+
+
+               // var tv = getTotalScore(s, $(this));
+               // $(this).find('.totalScores').text(tv);
+              //  $(this).find('.Score-TotalRanking').val(tv);
+
+                var tt = 0;
+                for (var i=0; i < s; i++) {
+                    tt += parseInt($(this).find("td").eq(i).find('.scorefield').text());
+                }
+
+                //$(this).find('.totalScores').text(tt);
+
+                 **********/
+
+            });
+
+            $('#CDTS tr.row-scores').each(function (index, tr) {
+                $(tr).find('td.scoreTD').each(function (index, td) {
+                  //  console.log('====== Score-EducationDegree ======= ');
+
+                  //  console.log(td);
+                   // v = $(td).getElementsByTagName('col_name');
+                    v = $(td).closest('div').attr('col_name', 'Score-EducationDegree');
+
+                });
+            });
+
+
+            @*
+            $('#CDTS tr.row-scores').each(function (index, tr) {
+                var cuid = $(this).attr('data-uid');
+                var tr = $(this);
+                console.log(cuid);
+                console.log(jQuery.isEmptyObject(@Html.Raw(CDataEvaluation)));
+                //console.log("xxxxx = " + Html.Raw(ViewBag.DataEvaluation.EvaluationProccess));
+                //jQuery.isEmptyObject(Html.Raw(CDataEvaluation);
+
+                var ff = jQuery.isEmptyObject(@Html.Raw(CDataEvaluation));
+                console.log(ff);
+                console.log(jQuery.type(ff));
+
+
+                if (!ff) {
+                    var LastProcess = @Html.Raw(CDataEvaluation);
+                    console.log("======= " + LastProcess);
+
+
+
+                   // var LastProcess = Html.Raw(ViewBag.DataEvaluation.EvaluationProccess);
+                console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                console.log(LastProcess);
+                console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                    console.log("length: " + LastProcess.length);
+
+                    if (LastProcess != null) {
+
+                        for (var i = 0; i < LastProcess.length; i++) {
+                            console.log(i + ":  " + LastProcess[i].CandidateId);
+                            if (LastProcess[i].CandidateId == cuid) {
+                                //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                                //console.log(cuid);
+                                //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                                //console.log(tr.attr('data-uid'));
+                                //console.log("xxxxxxxxxxxxx in row xxxxxxxxxxxxxxx");
+                                tr.addClass("shortlisted-item");
+                                tr.closest('tr').find(':checkbox').prop('checked', true);
+                                //console.log(tr.closest('tr').find(':checkbox').prop('checked'));
+
+                                if (LastProcess[i].EvaluationScores != null) {
+                                    //console.log("EvaluationScores length: " + LastProcess[i].EvaluationScores.length);
+                                    var totalScores = tr.find('input.totalScores').val();
+                                    //console.log('Total: ' + totalScores);
+                                    var getTotal = 0;
+                                    for (var j = 0; j < LastProcess[i].EvaluationScores.length; j++) {
+                                        //console.log("field: " + LastProcess[i].EvaluationScores[j].fieldName + " Value: " + LastProcess[i].EvaluationScores[j].fieldValue);
+                                        $(tr).find('td.scoreTD').each(function (index, td) {
+
+                                            if (LastProcess[i].EvaluationScores[j].fieldName == $(this).find('input').attr('name')) {
+                                                //console.log($(this).find('input').attr('name'));
+                                                // $(this).find('input').attr('name').val(LastProcess[i].EvaluationScores[j].fieldValue);
+                                                //console.log($(this).find('input').val());
+                                                $(this).find('input').val(LastProcess[i].EvaluationScores[j].fieldValue);
+                                                getTotal += parseInt($(this).find('input').val());
+                                            }
+
+                                        });
+
+                                    }
+                                    tr.find('input.totalScores').val(getTotal);
+                                }
+                            }
+                        }
+
+
+
+
+                    }
+
+                }
+
+
+
+
+
+            })
+            *@
+
+            //$('#JobCandidates').dataTable();
+            $('#JobCandidates').DataTable({
+
+                "columnDefs": [
+                    {
+                        "targets": [0, 1],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "target": [-1],
+                        "render": function (data, type, row) {
+                            console.log(row[8]);
+                            console.log($.parseJSON(row[8]));
+                            var mydata = $.parseJSON(row[8]);
+                            console.log(mydata.length);
+                            var CFA = "";
+                            if (mydata.length > 0) {
+                                $.each(mydata, function (key, value) {
+                                    CFA = CFA + '<div class="col-md-12 ctelement "><b>' + value.label + ':</b> ' + value.userData + '</div>';
+                                   // console.log(value.name + ": " + value.userData);
+                                });
+
+                            }
+                           // console.log(" ============================================ ");
+                            // console.log(data);
+
+                            return CFA;
+                        }
+                    }
+                ],
+            });
+
+
+            // Add event listener for opening and closing details
+            $('#JobCandidates tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script>
+
+}

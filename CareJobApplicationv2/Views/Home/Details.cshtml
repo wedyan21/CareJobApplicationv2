@@ -1,0 +1,117 @@
+﻿@model CareJobApplicationv2.Models.Jobs
+
+@{
+    ViewData["Title"] = "Job Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+   
+}
+
+
+<div class="mt-0 mb-5 p-5 page-title-bg ">
+    <h1 class="m-5">Jobs Details</h1>
+</div>
+
+<div >
+    
+
+    <div class="row">
+        <div class="col-lg-12 text-center m-4">
+            <a asp-action="" class="btn btn-sm btn-outline-primary">Apply</a>
+            <a asp-action="Index" class="btn btn-sm btn-primary fa fa-return">Back to List</a>
+        </div>
+        <div class="col-lg-6">
+            
+            <div class="card shadow-none card-border-none bg-light-care mb-3">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.JobTitle)</h6>
+                    <p><strong>@Html.DisplayFor(model => model.JobTitle)</strong></p>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" dir="rtl">
+            
+            <div class="card shadow-none card-border-none bg-light-care mb-3">
+                <div class="card-body">
+                    <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.JobTitleAr)</h6>
+                    <p ><strong>@Html.DisplayFor(model => model.JobTitleAr)</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+   <!-- Category & Branch -->
+    <div class="row">
+       <div class="col-md-3 col-xl-3">
+                  <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.Categories) </h6>
+                      <p class="card-text">@Html.DisplayFor(model => model.Categories.CategoryNameEn )</p>
+                    </div>
+                  </div>
+       </div>
+       <div class="col-md-3 col-xl-3">
+                  <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.Branchs)</h6>
+                      <p class="card-text"> @Html.DisplayFor(model => model.Branchs.BranchTitleEn )</p>
+                      
+                    </div>
+                  </div>
+       </div>   
+       
+         
+    
+     
+    <!-- Dates -->
+    
+       
+       <div class="col-md-6 col-xl-3">
+                  <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.PublishDate)</h6>
+                      <p class="card-text">@Convert.ToString(string.Format("{0:dd-MM-yyyy}", Model.PublishDate))</p>
+                      
+                    </div>
+                  </div>
+       </div>
+       <div class="col-md-6 col-xl-3">
+                  <div class="card shadow-none card-border-none bg-light-care mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.Deadline)</h6>
+                      <p class="card-text">@Convert.ToString(string.Format("{0:dd-MM-yyyy}", Model.Deadline))</p>
+                    </div>
+                  </div>
+       </div>
+    </div>
+    <!-- Description EN-->
+   <div class="row">
+       <div class="col-md-12">
+           <div class="card shadow-none card-border-none bg-light-care mb-3">
+               <div class="card-body">
+                   <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.JobDescription)</h6>
+                   <div class="Card-text">@Html.Raw(Model.JobDescription)</div>
+               </div>
+           </div>
+       </div>
+    </div>
+    <!-- Description Ar-->
+    <div class="row" dir="rtl">
+       <div class="col-md-12">
+           <div class="card shadow-none card-border-none bg-light-care mb-3">
+               <div class="card-body">
+                   <h6 class="card-title text-uppercase text-primary">@Html.DisplayNameFor(model => model.JobDescriptionAr)</h6>
+                   <div class="Card-text">@Html.Raw(Model.JobDescriptionAr)</div>
+               </div>
+           </div>
+       </div>
+   </div>
+
+   
+   
+</div>
+<div class="text-center p-5">
+    <a asp-action="" class="btn btn-sm btn-outline-primary">Apply</a>
+    <a asp-action="Index" class="btn btn-sm btn-primary fa fa-return">Back to List</a>
+</div>

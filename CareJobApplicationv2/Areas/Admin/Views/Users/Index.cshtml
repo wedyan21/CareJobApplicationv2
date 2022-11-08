@@ -1,0 +1,79 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<UserViewModel>
+@{
+    ViewData["Title"] = "Users";
+    //Layout = "../Shared/_Layout.cshtml";
+}
+
+<div class="card mt-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-8 text-left">
+                <h2>Users</h2>
+            </div>
+            <div class="col-md-4 text-right">
+                <a class="btn btn-primary mb-5" asp-area="Admin" asp-controll="User" asp-action="AddNewUser"><i class="fa fa-add"></i> Add New User </a>
+            </div>
+        </div>
+        
+    </div>
+    <div class="card-body">
+        <table id="CareStaffe" class="table table-bordered table-responsive table-care mt-5 ">
+            <thead class="table-hader-care">
+                <tr>
+                    @*<th>First Name</th>
+                    <th>Last Name</th>*@
+                    <th>UserName</th>
+                    <th>Email</th>
+                    <th>Care Team</th>
+                    <th>Branch</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        @*<td>@user.FirstName</td>
+                        <td>@user.LastName</td>*@
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.IsCareTeam</td>
+                        <td>@user.BranchName</td>
+                        <td>@string.Join(" , ", user.Roles.ToList())</td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" asp-area="Admin" asp-controll="User" asp-action="ManageUserRoles" asp-route-userid="@user.Id"><i class="fa fa-tasks"></i> ManageRoles</a>
+                            <a class="btn btn-sm btn-primary" asp-area="Admin" asp-controll="User" asp-action="EditUser" asp-route-userid="@user.Id"><i class="fa fa-edit"></i></a>
+                            <!--<a class="btn btn-sm btn-primary" asp-area="Admin" asp-controll="User" asp-action="EditUser" asp-route-userid="@user.Id"><i class="fa fa-stop-circle"></i> Block</a>
+                            <a class="btn btn-sm btn-primary" asp-area="Admin" asp-controll="User" asp-action="EditUser" asp-route-userid="@user.Id"><i class="fa fa-trash-can"></i></a>-->
+                        </td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+
+    </div>
+    
+ </div>
+
+@section Scripts {
+        <link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css" />
+
+        <script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#CareStaffe').dataTable();
+            })
+
+        </script>
+}

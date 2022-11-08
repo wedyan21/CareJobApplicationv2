@@ -1,0 +1,243 @@
+﻿@model CareJobApplicationv2.Models.InterviewSchedule
+
+@{
+    ViewData["Title"] = "Details";
+}
+<link href="~/css/site.css" rel="stylesheet" />
+
+<link href="~/css/custom.css" rel="stylesheet" />
+
+<div class="col-lg-12">
+    <div class="card  card-border-none bg-light-care mb-3 p3">
+        <div class="card-body">
+            <div class="row bg-fixed mb-3 pb-3 border ">
+                <div>
+                    <h4>InterviewSchedule</h4>
+                    <hr />
+
+                    <h2>@Html.DisplayFor(model => model.Job.JobTitle)</h2>
+                    <dl class="row">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Location)
+                        </dt>
+                        <dd class="col-sm-4">
+                            @Html.DisplayFor(model => model.Location)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.InterviewDate)
+                        </dt>
+                        <dd class="col-sm-4">
+                            @Html.DisplayFor(model => model.InterviewDate)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.InterviewDay)
+                        </dt>
+                        <dd class="col-sm-4">
+                            @Html.DisplayFor(model => model.InterviewDay)
+                        </dd>
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.InterviewTime)
+                        </dt>
+                        <dd class="col-sm-4">
+                            @Html.DisplayFor(model => model.InterviewTime)
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="card  card-border-none bg-light-care mb-3 p-3">
+        <div class="card-body">
+            <div class="row bg-fixed mb-3 pb-3 border ">
+
+                @if (Model.InterviewPanels.Count() > 0)
+                {
+                    <a class="btn btn-primary" href="../InterviewPanels/Create?JobId=@Model.Job.Id&InterviewId=@Model.Id"> Add Panel</a>
+
+                    <div class="row">
+                        <table class="table table-responsive table-care">
+                            <thead calss="table-hader-care">
+                                <tr>
+                                    <th>
+                                        Panel
+                                    </th>
+                                    <th>
+                                        Position
+                                    </th>
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.InterviewPanels)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Position)
+                                        </td>
+
+                                        <td class="text-right">
+                                            <a class="btn btn-primary" asp-controller="InterviewPanels" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i> </a> 
+
+                                            <a class="btn btn-danger" asp-controller="InterviewPanels" asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i> </a>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12">
+    <div class="card  card-border-none bg-light-care mb-3 p-3">
+        <div class="card-body">
+            <div class="row bg-fixed mb-3 pb-3 border ">
+
+
+                @if (ViewBag.InterviewCandidates2 != null)
+                {
+                    <div class="row">
+                        <table class="table table-responsive table-care">
+                            <thead calss="table-hader-care">
+                                <tr>
+
+                                    <th>
+                                        interviewees
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                        Mobile
+                                    </th>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Time
+                                    </th>
+                                    <th>
+                                        Comments
+                                    </th>
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.InterviewCandidates2)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @item.CandidateName
+                                        </td>
+                                        <td>
+                                            @item.Email
+                                        </td>
+                                        <td>
+                                            @item.Mobile
+                                        </td>
+                                        <td>
+                                            @item.InterViewDate
+                                        </td>
+                                        <td>
+                                            @item.InterViewTime
+                                        </td>
+                                        <td>
+                                            @item.coments
+                                        </td>
+
+                                        <td class="text-right">
+                                            <a class="btn btn-primary" asp-controller="InterviewCandidates" asp-action="Edit" asp-route-id="@item.id"><i class="fa fa-edit"></i> </a>
+
+                                            <a class="btn btn-danger" asp-controller="InterviewCandidates" asp-action="Delete" asp-route-id="@item.id"><i class="fa fa-trash"></i> </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+                @*
+                    if(ViewBag.candidates != null)
+                     {
+                    <div class="row">
+                        <table class="table">
+                            <thead>
+                                <tr>
+
+                                    <th>
+                                        interviewees
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                       Date
+                                    </th>
+                                    <th>
+                                        Time
+                                    </th>
+                                    <th>
+                                        Comments
+                                    </th>
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.candidates)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.JobId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.CandidateId)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.InterViewDate)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.InterviewTime)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Comments)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.InterviewSchedule.Id)
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                     }
+                *@
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+                    <a asp-action="Index">Back to List</a>
+                </div>

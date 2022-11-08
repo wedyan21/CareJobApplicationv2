@@ -1,0 +1,79 @@
+﻿@model CareJobApplicationv2.Models.ApplicantLanguageSkilles
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdateApplicantLanguage</title>
+</head>
+<body>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditApplicantLanguage" method="post" onsubmit="return SubmitForm(this,'ApplicantLanguages')">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="LanguageName" class="control-label"></label>
+                        <select asp-for="LanguageName" class="form-select" asp-items="ViewBag.LanguageName">
+                                    <option value="">Choose a Language</option>
+                                </select>
+                        <span asp-validation-for="LanguageName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="SpeakingLevel" class="control-label"></label>
+                        <select asp-for="SpeakingLevel" class="form-select" asp-items="ViewBag.SpeakingLevel">
+                            <option value="">Please Select Level</option>
+                        </select>
+                        <span asp-validation-for="SpeakingLevel" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="ReadingLevel" class="control-label"></label>
+                        <select asp-for="ReadingLevel" class="form-select" asp-items="ViewBag.ReadingLevel">
+                            <option value="">Please Select Level</option>
+                        </select>
+                        <span asp-validation-for="ReadingLevel" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label asp-for="WritingLevel" class="control-label"></label>
+                        <select asp-for="WritingLevel" class="form-select" asp-items="ViewBag.WritingLevel">
+                            <option value="">Please Select Level</option>
+                        </select>
+                        <span asp-validation-for="WritingLevel" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mb-2">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

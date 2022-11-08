@@ -1,0 +1,228 @@
+﻿
+@model CareJobApplicationv2.Models.ApplicantBrofile
+
+
+            
+@{
+   /*
+    *  var userPhoto = "";
+    if(Model.ApplicantPhoto == null)
+    {
+        userPhoto = "image-placeholder.jpg";
+    }
+    else
+    {
+        userPhoto = Model.ApplicantPhoto;
+    }
+    */
+   /*if (ViewBag.userProfile != null)
+   // {
+   //     ApplicantBrofile ApplicantBrofile = ViewBag.userProfile;
+   //     if (ApplicantBrofile.ApplicantPhoto != null)
+        {
+            userPhoto = ApplicantBrofile.ApplicantPhoto;
+        }
+        */
+   
+
+  <div class="row">
+    <!-- asp-action="_ApplicantProfile" -->
+ 
+        <form  asp-action="ProfileCreate" enctype = "multipart/form-data" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#PersonalInfo" >
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
+        
+            <div class="row">
+                  <div class="col-lg-4">
+                    <div class="card mb-4">
+                      <div class="card-body text-center">
+                        <div class="form-group">
+                                @{
+                                    var myprofileImage = "image-placeholder.jpg";
+                                    if(Model != null)
+                                    {
+                                        if (Model.ApplicantPhoto !=null)
+                                        {
+                                            myprofileImage = Model.ApplicantPhoto;
+
+                                }
+                                <img id="PhotoDisplay" style="max-width:200px;" class="imageplaceholder" src="/images/ProfilePhotos/@myprofileImage" onclick="triggerClick()" />
+
+                                }
+    
+                            }
+                            
+                            <input asp-for="ApplicantPhoto" id="ProfileImage" onChange="displayImage(this)" type="file" class="form-control" style="display:none;" />
+                            <label asp-for="ApplicantPhoto" class="control-label"></label>
+                            <span asp-validation-for="ApplicantPhoto" class="text-danger"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                          <div class="card-body p-0">
+              
+            
+                          </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="card mb-4">
+                      <div class="card-body">
+                         <div class="row">   
+                                 <div class="col-sm-3">
+                                     <label asp-for="FullNameEn" class="control-label"></label>
+                                </div>
+                                <div class="col-sm-9">                     
+                                    <input asp-for="FullNameEn" class="form-control" />
+                                    <span asp-validation-for="FullNameEn" class="text-danger"></span>
+                                </div>
+                           </div>              
+              
+            
+                        <hr>
+                         <div class="row">   
+                                <div class="col-sm-3">
+                                    <label asp-for="FullNameAr" class="control-label"></label>
+                                </div>
+                                <div class="col-sm-9"> 
+                                    <input asp-for="FullNameAr" class="form-control" />
+                                    <span asp-validation-for="FullNameAr" class="text-danger"></span>
+                                 </div>
+                        </div>   
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                              <label asp-for="BirthDate" class="control-label"></label>
+                 
+                          </div>
+                          <div class="col-sm-9">
+                            <input asp-for="BirthDate" class="form-control" />
+                            <span asp-validation-for="BirthDate" class="text-danger"></span>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <label asp-for="GenderId" class="control-label"></label>
+                          </div>
+                          <div class="col-sm-9">
+                         
+                                    
+                                    
+                                        <select asp-for="GenderId" asp-items="Html.GetEnumSelectList<Gender>()" class="form-select">
+                                            <option selected="selected" value="">Please select</option>
+                                        </select>
+                                        <span asp-validation-for="GenderId" class="text-danger" />
+                                    
+                               
+                                    @*{
+                                        if (Model != null)
+                                        {
+                                            var MaleChecked = "";
+                                            var FemaleChecked = "";
+                                            if (Model.GenderId != null)
+                                            {
+                                                if (Model.GenderId == 1)
+                                                {
+                                                    MaleChecked = "checked";
+
+                                                }
+                                                else
+                                                {
+                                                    FemaleChecked = "checked";
+                                                }
+                                                MaleChecked = "checked";
+                                            }
+                                        }
+                                    }
+                            <!--input asp-for="GenderId" class="form-control" /-->
+                            <input id="GenderId" type="radio" name="GenderId" value="1" />
+                            <label for="GenderId">Male</label>
+                            <input id="GenderId" type="radio" name="GenderId" value="2" />
+                            <label for="GenderId">Female</label>
+                            <span asp-validation-for="GenderId" class="text-danger"></span>
+                            *@
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <label asp-for="Nationality" class="control-label"></label>
+                        
+                          </div>
+                          <div class="col-sm-9">
+                            <input asp-for="Nationality" class="form-control" />
+                            <span asp-validation-for="Nationality" class="text-danger"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="card mb-4">
+                      <div class="card-body">
+                         <div class="row">   
+                                 <div class="col-sm-3">
+                                     <label asp-for="Address" class="control-label"></label>
+                                </div>
+                                <div class="col-sm-9">                     
+                                    <input asp-for="Address"  class="form-control" />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                           </div>              
+              
+            
+                        <hr>
+                         <div class="row">   
+                                <div class="col-sm-3">
+                                     <label asp-for="Country" class="control-label"></label>
+                                </div>
+                                <div class="col-sm-9"> 
+                                    <input asp-for="Country" class="form-control" />
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                 </div>
+                        </div>   
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                              <label asp-for="City" class="control-label"></label>
+                          </div>
+                          <div class="col-sm-9">
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <label asp-for="MobileNumber" class="control-label"></label>
+                          </div>
+                          <div class="col-sm-9">
+                            <input asp-for="MobileNumber" class="form-control" />
+                            <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <div class="row">
+                            <div class="col-md-12 text-center ">
+                                 <input type="submit" value="Save" class="btn btn-primary " />
+                            </div>
+                        </div>
+                    </div>
+        
+                  </div>
+            </div>
+            
+        </form>
+    </div>
+
+   // }
+}
+
+
+
+
+@*section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@

@@ -1,0 +1,161 @@
+﻿@using CareJobApplicationv2.Models
+@using Newtonsoft.Json;
+@using Newtonsoft;
+@using Newtonsoft.Json.Linq;
+
+@{
+    ViewData["Title"] = "Candidates InterView";
+
+
+}
+
+
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+
+
+
+
+<div class="row m-5">
+    <div class="col-md-3">
+        <input type="button" onclick="CreateInterViewDates()" class="btn btn-primary" value="Create InterView Dates" />
+    </div>
+
+
+</div>
+
+<table id="InterViewListTable" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Candidate</th>
+
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Comments</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td data-uid="@item.UserId" data-joid="@item.JobId">@item.FullNameEn</td>
+                <td>@item.MobileNumber</td>
+                <td class="invitationdate">
+                    
+                        <input id="InterViewDate" name="InterViewDate" class="InterViewDate form-control datepicker" style="width:100px" />
+                        
+
+                    
+                </td>
+                <td class="Comments"><textarea id="Comments" name="Comments" rows="3" cols="50"></textarea></td>
+                <td>
+                    
+                    <button class="save-date btn btn-primary" >Save Interview Date</button>
+                </td>
+            </tr>
+
+
+
+
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $(".datepicker").datepicker();
+        });
+
+        $(".save-date").click(function () {
+            var $item = $(this).closest("tr")   // Finds the closest row <tr> 
+                .find("td.invitationdate")
+                .find('input.InterViewDate')// Gets a descendent with class="nr"
+                .val();         // Retrieves the text within <td>
+            console.log($item)
+            var date1 = $(this).closest("tr").find("td.invitationdate").find('input.InterViewDate').val();
+           // var date2 = $(this).closest("tr").find("td.invitationdate").find('input.InterViewDate').val();
+            var invitationdate = Date.parse(date1);
+            
+            var cuid = $(this).closest('tr').find('td').attr('data-uid');
+            var joid = $(this).closest('tr').find('td').attr('data-joid');
+            var invitationDate = $(this).closest("tr").find("td.invitationdate").find('input.InterViewDate').val();
+            var comments = $(this).closest("tr").find("td.Comments").find('textarea').html();
+            console.log(cuid);
+            console.log(joid);
+            console.log(comments);
+            $.ajax({
+                type: "POST",
+                url: "/CandidatesManagement/SaveInterviewDate/",
+                data: {
+                    JobId: joid,
+                    CandidateId: cuid,
+                    InterViewDate: invitationdate,
+                    comments: comments
+
+
+                },
+                success: function (result) {
+                    console.log(result);
+                    $("#ApplicantEducation").DataTable().ajax.reload();
+                },
+                error: function (req, status, error) {
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+            
+        });
+
+        function saveInterViewDate(t) {
+            console.log()
+            alert("Hi Save");
+            
+
+            var tr = $(this).closest('tr');
+            $(this).closest('tr').addClass('test');
+            // var date = $(this).closest('tr').find('td').find('input:InterViewDate').value();
+            var date = $(this).closest('tr').find('input.InterViewDate').val();
+                console.log(tr);
+            console.log($(this).closest('tr').find('input.InterViewDate').val());
+
+        }
+
+        function AddEvaluatorList(JobId, EvaluationProccess) {
+            //alert("Remove" + langId);
+            console.log('=======================');
+            console.log(EvaluationProccess);
+            console.log('=======================');
+            var mydata = { 'JobId': JobId, 'EvaluationProccess': EvaluationProccess };
+            $.ajax({
+                type: "POST",
+                url: "/CandidatesManagement/ShortListByEvaluator/",
+                data: {
+                    JobId: JobId,
+                    EvaluationProccess: JSON.stringify(EvaluationProccess),
+
+
+                },
+                success: function (result) {
+                    console.log(result);
+                    $("#ApplicantEducation").DataTable().ajax.reload();
+                },
+                error: function (req, status, error) {
+                    console.log(status);
+                    console.log(error);
+                }
+            })
+
+
+        }
+
+    </script>
+
+
+    
+}

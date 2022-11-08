@@ -1,0 +1,444 @@
+﻿@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    int CJobId = ViewBag.JobId;
+}
+
+<style>
+    
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<div class="text-center">
+    <img class="d-block w-100" src="~/images/adv-header-01.jpg" />
+</div>
+
+<div class="row m-5">
+    <div class="col-md-3">
+        <input type="button" onclick="getInterViewList()" class="btn btn-primary" value="Create InterViewList" />
+    </div>
+
+
+</div>
+
+
+<table id="JobCandidates" class="table table-responsive table-care table-bordered">
+    <thead class="table-hader-care">
+        <tr>
+            @*<th style="display: none;">Job</th>
+                <th style="display: none;">UserId</th>*@
+            <th>Name</th>
+            <th>Gender</th>
+
+            <th>Major</th>
+            <th>Degree</th>
+            <th>Languages</th>
+            <th>Experiance</th>
+            <th>1st Evaluator</th>
+            <th>2nd Evalutor</th>
+            <th>Line Manager</th>
+            <th>Final Score</th>
+            <th>Ranking</th>
+            <th>Comment</th>
+            <th>InterView Listed</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr uid="@item.UserId">
+
+                @*<td rowspan="2" style="display: none;">@item.JobId</td>
+                    <td rowspan="2" style="display: none;">@item.UserId</td>*@
+                <th >@item.FullNameEn</th>
+                <th >@item.GenderId</th>
+
+                <td>
+
+
+                    @{
+                        int HEDscore = 0;
+                        if (item.EducationDegree.Count > 0)
+                        {
+                            foreach (var i in item.EducationDegree)
+                            {
+                                <div class="col-md-12 ctelement">
+                                    @i.Degree
+                                </div>
+                                HEDscore = (i.Score > HEDscore) ? i.Score : HEDscore;
+
+                            }
+
+
+
+                        }
+
+
+                    }
+                </td>
+                <td>
+
+                    @{
+                        //int HEMscore = 0;
+
+                        if (item.EducationMajor.Count > 0)
+                        {
+                            foreach (var i in item.EducationMajor)
+                            {
+                                <div class="col-md-12 ctelement">@i.Major</div>
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                <td>
+                    @{
+                        int HSelectedLanguageScor = 0;
+                        //, @i.ReadingLevel, @i.WritingLevel)
+                        if (item.Languages.Count > 0)
+                        {
+                            foreach (var i in item.Languages)
+                            {
+
+                                <div class="col-md-12 ctelement ">
+                                    <div class="row">
+                                        <div class="col-md-4 ">
+                                            <b>@i.LanguageName</b>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <span class="Langlevel-@i.SpeakingLevel rounded-3">S</span>
+                                            <span class="Langlevel-@i.ReadingLevel rounded-3">R</span>
+                                            <span class="Langlevel-@i.WritingLevel rounded-3">w</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                if (@i.LanguageName == "English")
+                                {
+
+                                    HSelectedLanguageScor = (Convert.ToInt32(i.SpeakingLevel) + Convert.ToInt32(i.ReadingLevel) + Convert.ToInt32(i.WritingLevel)) / 3;
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                <td>
+                    @{
+                        //, @i.ReadingLevel, @i.WritingLevel)
+                        if (item.ExperienceList.Count > 0)
+                        {
+                            TimeSpan? Difference;
+                            int myPeriod = 0;
+                            string yperiod = " - ";
+                            string SC = "";
+                            foreach (var ex in item.ExperienceList)
+                            {
+                                Difference = null;
+                                if (ex.EndDate != null && ex.StartDate != null)
+                                {
+                                    Difference = (ex.EndDate - ex.StartDate);
+                                    if (Difference.Value.Days > 0)
+                                    {
+                                        if (Difference.Value.Days > 365)
+                                        {
+
+                                            myPeriod = Difference.Value.Days / 365;
+                                            yperiod = myPeriod + " Years";
+
+                                            SC = (myPeriod > 3) ? "exp-3" : "exp-2";
+                                        }
+                                        else
+                                        {
+                                            myPeriod = Difference.Value.Days;
+                                            yperiod = myPeriod + " Days";
+
+                                            SC = "exp-1";
+                                        }
+                                    }
+
+
+
+                                }
+
+
+                                <div class="col-md-12 ctelement ">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <b>@ex.Position</b>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <span class="@SC p-1 rounded-3">@yperiod </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+
+                        }
+
+                    }
+                </td>
+                @{
+                    int finalScor = 0;
+                    var ccu = item.UserId;
+                    foreach (var Dataitem in ViewBag.DataEvaluation)
+                    {
+                        @*<p>@Dataitem.JobId</p>
+                            <p>@Dataitem.EvaluatorId</p>*@
+                        int totalScores = 0;
+                        dynamic dynJson = JsonConvert.DeserializeObject(Dataitem.EvaluationProccess);
+                        foreach (var sub in dynJson)
+                        {
+
+                            if (sub.CandidateId == ccu)
+                            {
+                                foreach (var sub2 in sub.EvaluationScores)
+                                {
+                                    int scoreItem = Convert.ToInt32(sub2.fieldValue);
+                                    totalScores = totalScores + Convert.ToInt32(sub2.fieldValue);
+
+                                }
+                                <td>
+                                    @totalScores
+                                    @{
+                                        finalScor += totalScores;
+                                    }
+
+                                </td>
+                            }
+                            // dynamic dynJson2 = JsonConvert.DeserializeObject(sub.EvaluationScores);
+
+                        }
+
+
+                    }
+
+                }
+                <td>@Convert.ToInt32(finalScor)</td>
+                <td>@Convert.ToInt32(finalScor / 3)</td>
+                <td>
+                    
+                    <a href="#" class="btn btn-sm btn-warning" onclick="AddComment('@item.UserId')"> <i class="fas fa-edit"></i> Comment</a>
+
+                </td>
+                <td>
+                    <!--input type="checkbox" /-->
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </td>
+
+            </tr>
+
+
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts
+{
+
+   
+    <script type="text/javascript">
+
+            var Popup;
+           // var AddComment;
+
+            function PopupForm(url, Title, height, width) {
+                console.log(Title);
+                var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            resizable: false,
+                            //title: 'Fill Details',
+                            title: Title,
+                            height: height,
+                            width: width,
+                            close: function () {
+                                Popup.dialog('destroy').remove();
+                            }
+                        });
+                    })
+            }
+
+        function SubmitForm(form, TableId) {
+            console.log(TableId)
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                console.log('Valid Form');
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            console.log(form + "Statue: " + data.success);
+                            Popup.dialog('close');
+                            //ExperienceTable.ajax.reload();
+                            $("#" + TableId).DataTable().ajax.reload();
+
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            }
+            return false;
+        }
+
+            function getInterViewList() {
+                //alert("Long");
+                var InterViewListArray = [];
+                $('#JobCandidates tr.Longtlisted-item').each(function (index, tr) {
+
+                    console.log($(this).find('td.selectToList'));
+                    console.log($(this).find('td.selectToList').find('input:checkbox').attr('Checked'));
+                    console.log($(this));
+                    if ($(this).attr('uid') != undefined) {
+                        InterViewListArray.push($(this).attr('uid'));
+                    }
+
+
+
+                });
+
+                console.log(InterViewListArray)
+                console.log(JSON.stringify(InterViewListArray));
+
+                $.ajax({
+                    type: "POST",
+                    url: "/CandidatesManagement/CreateInterViewList/",
+                    data: {
+                        JobId: parseInt(@CJobId),
+                        InterViewList: JSON.stringify(InterViewListArray),
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        $("#JobCandidates").DataTable().ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+        }
+        @* @item.UserId,@item.JobId   CandidateId, JobId*@
+        function AddComment(CandidateId) {
+            //alert(CandidateId);
+            var url = "/CandidatesManagement/AddFinalAnalysisComment/?userId=" + CandidateId + "&JobId=" + @CJobId;
+            var Title = "Final Analysis Comment";
+            var height = 280;
+            var width = 700;
+            PopupForm(url, Title, height, width);
+
+        }
+
+            $(document).ready(function () {
+                /*AddComment = function (CandidateId, JobId) {
+                    alert(CandidateId);
+                    var url = "/CandidatesManagement/AddFinalAnalysisComment/?userId=" + CandidateId + "&JobId=" + JobId;
+                    var Title = "Final Analysis Comment";
+                    var height = 280;
+                    var width = 700;
+                    PopupForm(url, Title, height, width);
+
+                }*/
+
+                $('#JobCandidates tr').each(function (index, tr) {
+
+                    $(this).closest('tr').find(':checkbox').prop('checked', this.checked);
+                    if ($(this).closest('tr').find(':checkbox').prop('checked') == true) {
+                        console.log("vvvvvvvvvvvvvvv");
+                        console.log(this);
+                        console.log("vvvvvvvvvvvvvvv");
+
+                        $(this).closest('tr').addClass('Longtlisted-item');
+                    } else {
+                        $(this).closest('tr').removeClass('Longtlisted-item');
+                    }
+                    /*
+                    if ($(this).closest('tr').hasClass('Longtlisted-item')) {
+                        $(this).closest('tr').removeClass('Longtlisted-item');
+                    } else {
+                        $(this).closest('tr').addClass('Longtlisted-item');
+                    }
+                    */
+
+                });
+
+                $(':checkbox').on('change', function () {
+
+                    $(this).closest('tr').find(':checkbox').prop('checked', this.checked);
+                    if ($(this).closest('tr').hasClass('Longtlisted-item')) {
+                        $(this).closest('tr').removeClass('Longtlisted-item');
+                    } else {
+                        $(this).closest('tr').addClass('Longtlisted-item');
+                    }
+
+
+                });
+
+            })
+
+
+    </script>
+
+
+}

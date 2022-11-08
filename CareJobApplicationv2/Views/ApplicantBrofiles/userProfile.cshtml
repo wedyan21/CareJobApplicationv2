@@ -1,0 +1,1090 @@
+﻿@using CareJobApplicationv2;
+
+
+<link rel="stylesheet" href="~/css/wizard-style.css" />
+
+
+
+
+
+<!--form action="#" class="form"-->
+<div class="m-5">
+    <h1 class="text-center">Profile information</h1>
+</div>
+
+<!-- Progress bar -->
+<div class="progressbar">
+    <div class="progress" id="progress"></div>
+
+    <div class="progress-step progress-step-active"
+         data-title="Personal Data"></div>
+    <div class="progress-step" data-title="Experience"></div>
+    <div class="progress-step" data-title="Education"></div>
+    <div class="progress-step" data-title="Languages"></div>
+    <div class="progress-step" data-title="Computer Skills"></div>
+    <div class="progress-step" data-title="Documents"></div>
+    <div class="progress-step" data-title="Referee"></div>
+
+</div>
+
+<!-- Steps -->
+<div class="form-step form-step-active">
+    <div class="m-3">
+        <h3 class="text-center">Personal Data</h3>
+    </div>
+    <div id="PersonalInfo">
+        <partial name="_ApplicantProfile" />
+    </div>
+
+    <!--partial name="_GetUserProfile" /-->
+    <div class="mt-3 mb-3 text-right">
+        <a href="#" class="btn btn-primary btn-next width-50 ml-auto">Next</a>
+    </div>
+</div>
+<div class="form-step">
+    <div id="Experience">
+        <partial name="_ApplicantExperience" />
+
+    </div>
+
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <a href="#" class="btn btn-primary btn-next">Next</a>
+    </div>
+</div>
+<div class="form-step">
+    <div id="Education">
+        <partial name="_ApplicantEducation" />
+
+    </div>
+
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <a href="#" class="btn btn-primary btn-next">Next</a>
+    </div>
+</div>
+<div class="form-step">
+    <div id="LanguageSkilles">
+        <partial name="_ApplicantLanguages" />
+
+    </div>
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <a href="#" class="btn btn-primary btn-next">Next</a>
+    </div>
+</div>
+<div class="form-step">
+    <div id="ComputerSkills">
+        <partial name="_ApplicantComputerSkills" />
+
+    </div>
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <a href="#" class="btn btn-primary btn-next">Next</a>
+    </div>
+</div>
+<div class="form-step">
+    <div id="Documents">
+        <partial name="_ApplicantDocuments" />
+
+    </div>
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <a href="#" class="btn btn-primary btn-next">Next</a>
+    </div>
+
+</div>
+<div class="form-step">
+    <div id="Referee">
+        <partial name="_ApplicantReferee" />
+
+    </div>
+    <div class="btns-group">
+        <a href="#" class="btn btn-primary btn-prev">Previous</a>
+        <!-- a href="#" class="btn btn-primary btn-next">Next</a-->
+    </div>
+
+</div>
+
+
+<!--/form-->
+
+
+
+<link rel="stylesheet" type="text/css" href="~/lib/DataTables/DataTables-1.12.1/css/dataTables.bootstrap.min.css" />
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/wizard-script.js"></script>
+
+    <!--script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></!--script-->
+    
+    <script type="text/javascript" src="~/lib/datatables1-10/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="~/lib/datatables1-10/js/dataTables.bootstrap4.js"></script>
+
+    
+
+
+
+
+
+
+    <script>
+        var Popup;
+        var Educationtable, Lannguagetable, Refereetable;
+        
+
+        var ExperienceColumns = [
+            { "data": "id" },
+            { "data": "employerName" },
+            { "data": "position" },
+            { "data": "startDate"},
+            { "data": "endDate" },
+            { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick=EditEperience("' + row.id + '");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveExperience("' + row.id + '");> <i class="fas fa-trash"></i></a>' } }
+
+        ];
+
+        var EducationColumns = [
+            { "data": "id" },
+            { "data": "degree" },
+            { "data": "major" },
+            { "data": "countryEducation" },
+            { "data": "institutionEn" },
+            { "data": "status" },
+            { "data": "yearOfStarting" },
+            { "data": "yearOfFinished" },
+            { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick=EditEducation("' + row.id + '");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveEducation("' + row.id + '");> <i class="fas fa-trash"></i></a>' } }
+
+        ];
+
+        function PopupForm(url, Title, height, width) {
+            //console.log(Title);
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        resizable: false,
+                        //title: 'Fill Details',
+                        title: Title,
+                        height: height,
+                        width: width,
+                        close: function () {
+                            Popup.dialog('destroy').remove();
+                        }
+                    });
+                })
+        }
+
+        function SubmitForm(form, TableId) {
+            console.log(TableId)
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                console.log('Valid Form');
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            console.log(form + "Statue: " + data.success);
+                            Popup.dialog('close');
+                            //ExperienceTable.ajax.reload();
+                            $("#" + TableId).DataTable().ajax.reload();
+
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            }
+            return false;
+        }
+
+        function SubmitFormold(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            DataTable.ajax.reload();
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function SubmitEducationForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            Educationtable.ajax.reload();
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+        function SubmitRefereeForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            Refereetable.ajax.reload();
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function SubmitDocsForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            Refereetable.ajax.reload();
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function SubmitQ1AnswerForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            Q1table.ajax.reload();
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function SubmitExperienceForm(form, TableId) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            //ExperienceTable.ajax.reload();
+                            $("#" + TableId).DataTable().ajax.reload();
+
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function InitDataTable(TableId, AjaxUrl, myColumns) {
+            // console.log('I am in DataTable ('+TableId +')');
+            $("#" + TableId).DataTable({
+                "serverSide": true,
+                "filter": false,
+                "processing": true,
+                "bInfo": false,
+                "paging": false,
+                "ordering": false,
+                "searching": false,
+                "ajax": {
+
+                    "url": "/ApplicantBrofiles/" + AjaxUrl,
+                    "type": "GET",
+                    "dataType": "json",
+                    "dataSrc": "",
+
+
+                },
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    }
+                ],
+
+                "columns": myColumns,
+
+
+                "language": {
+                    "paginate": {
+                        "previous": "السابق",
+                        "next": "التالي"
+                    },
+                    "emptyTable": "No data found, Please click on <b>Add</b> button  "
+                },
+
+            })
+        }
+
+        $(document).ready(function () {
+
+            /* $.ajax({
+                     type:"POST",
+                     url :"Url.Action("GetApplicantLanguages")",
+                     dataType:"json",
+                     success: function(result){
+                         console.log(result);
+                     },
+                     error: function(req, status, error){
+                         console.log(status);
+                         console.log(error);
+                     }
+                 })
+                 */
+            /*********************  Experience ****************** */
+            InitDataTable('ApplicantExperiencTable', 'GetApplicantExperiences', ExperienceColumns);
+            ExperienceTable = $("#ApplicantExperiencTable").DataTable()
+            /*
+            ExperienceTable = $("#ApplicantExperiencTable111").DataTable({
+                    "serverSide": true,
+                    "filter":false,
+                    "processing": true,
+                    "bInfo" : false,
+                    "paging": false,
+                    "ordering": false,
+                    "searching": false,
+
+
+                    "ajax":{
+
+                                "url" :"/ApplicantBrofiles/GetApplicantExperiences",
+                                "type":"GET",
+                                "dataType":"json",
+                                "dataSrc":"",
+                               // "success":function (data){
+                               //     console.log(data);
+                               // },
+
+                            },
+                    "columnDefs": [
+                                {
+                                    "targets": [0],
+                                    "visible": false,
+                                    "searchable": false
+                                }
+                            ],
+
+                   "columns": [
+                        {"data":"id"},
+                        {"data":"employerName"},
+                        {"data":"position"},
+                        {"data":"startDate"},
+                        {"data":"endDate"},
+                        {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditEperience("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveExperience("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+
+
+                   ],
+
+
+                    "language": {
+                                "paginate": {
+                                  "previous": "السابق",
+                                  "next":"التالي"
+                                },
+                                "emptyTable":"No data found, Please click on <b>Add</b> button  "
+                              },
+
+            })
+            */
+            EditEperience = function (ExperienceId) {
+                var url = "/ApplicantBrofiles/EditApplicantExperiences/" + ExperienceId;
+                var Title = " Edite Experience Data";
+                var height = 280;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+
+
+            RemoveExperience = function (ExperienceId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteApplicantExperience",
+                    data: {
+                        Id: ExperienceId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        //ExperienceTable.ajax.reload();
+                        $("#ApplicantExperiencTable").DataTable().ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+            /*********************  Education ****************** */
+            InitDataTable('ApplicantEducation', 'GetApplicantEducation', EducationColumns);
+            /*
+            Educationtable = $("#ApplicantEducation").DataTable({
+                    "serverSide": true,
+                    "filter":false,
+                    "processing": true,
+                    "bInfo" : false,
+                    "paging": false,
+                    "ordering": false,
+                    "searching": false,
+
+
+                    "ajax":{
+
+                                "url" :"/ApplicantBrofiles/GetApplicantEducation",
+                                "type":"GET",
+                                "dataType":"json",
+                                "dataSrc":"",
+
+
+                            },
+
+                    "columnDefs": [
+                                {
+                                    "targets": [0],
+                                    "visible": false,
+                                    "searchable": false
+                                }
+                            ],
+                   "columns": [
+                        {"data":"id"},
+                        {"data":"degree"},
+                        {"data":"major"},
+                        {"data":"countryEducation"},
+                        {"data":"institutionEn"},
+                        {"data":"status"},
+                        {"data":"yearOfStarting"},
+                        {"data":"yearOfFinished"},
+                        {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditEducation("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveEducation("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+
+                   ],
+
+                    "language": {
+                                "paginate": {
+                                  "previous": "السابق",
+                                  "next":"التالي"
+                                },
+                                "emptyTable":"No data found, Please click on <b>Add</b> button  "
+                              },
+
+                })
+                */
+            EditEducation = function (EducationId) {
+                var url = "/ApplicantBrofiles/EditApplicantEducation/" + EducationId;
+                var Title = " Edite Education Data"
+                var height = 400;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+
+            RemoveEducation = function (EducationId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteApplicantEducation",
+                    data: {
+                        Id: EducationId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        $("#ApplicantEducation").DataTable().ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+
+            /*********************** Language ************************** */
+            var BasicSkill = '<span class="badge  bg-label-danger">Basic</span>';
+            var IntermediateSkill = '<span class="badge  bg-label-primary">Intermediate</span>';
+            var FluentSkill = '<span class="badge  bg-label-success">Fluent</span>';
+            var LanguageColumns2 = [
+                { "data": "id" },
+                { "data": "languageName" },
+                //{"data":"speakingLevels"},
+                { "data": "speakingSkill" },
+                // {"data":"readingLevels"},
+                { "data": "readingSkill" },
+                //  {"data":"writingLevels"},
+                { "data": "writingSkill" },
+                { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick=EditLanguage("' + row.id + '");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveLanguage("' + row.id + '");> <i class="fas fa-trash"></i></a>' } }
+
+            ]
+            /*
+             var LanguageColumns = [
+                         {"data":"id"},
+                         {"data":"languageName"},
+                         {"data":"speakingLevel","render": function ( data, type, row ) {
+
+                                     switch (data){
+                                         case 1:
+                                                 return BasicSkill;
+                                                 break;
+                                         case 2:
+                                                 return IntermediateSkill;
+                                                 break;
+                                         case 3:
+                                                 return FluentSkill;
+                                                 break;
+                                     }
+
+
+                                 }
+                         },
+
+                         {"data":"readingLevel","render": function ( data, type, row ) {
+                                    switch (data){
+                                         case 1:
+                                                 return BasicSkill;
+                                                 break;
+                                         case 2:
+                                                 return IntermediateSkill;
+                                                 break;
+                                         case 3:
+                                                 return FluentSkill;
+                                                 break;
+                                     }
+                                 }},
+                         {"data":"writingLevel","render": function ( data, type, row ) {
+                                    switch (data){
+                                         case 1:
+                                                 return BasicSkill;
+                                                 break;
+                                         case 2:
+                                                 return IntermediateSkill;
+                                                 break;
+                                         case 3:
+                                                 return FluentSkill;
+                                                 break;
+                                     }
+                                 }},
+                         {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditLanguage("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveLanguage("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+                     ];
+                     */
+            InitDataTable('ApplicantLanguages', 'GetApplicantLanguages', LanguageColumns2);
+            /*
+                       Lannguagetable = $("#ApplicantLanguages").DataTable({
+                            "serverSide": true,
+                            "filter":false,
+                            "processing": true,
+                            "bInfo" : false,
+                            "paging": false,
+                            "ordering": false,
+                            "searching": false,
+
+                            "ajax":{
+
+                                        "url" :"/ApplicantBrofiles/GetApplicantLanguages",
+                                        "type":"GET",
+                                        "dataType":"json",
+                                        "dataSrc":""
+
+                                    },
+                           "columnDefs": [
+                                        {
+                                            "targets": [0],
+                                            "visible": false,
+                                            "searchable": false
+                                        }
+                                    ],
+                           "columns": [
+                                {"data":"id"},
+                                {"data":"languageName"},
+                                {"data":"speakingLevel","render": function ( data, type, row ) {
+                                            //console.log(typeof data);
+                                            switch (data){
+                                                case 1:
+                                                        return '<span class="badge  bg-label-danger">Intermediate</span>';
+                                                        break;
+                                                case 2:
+                                                        return '<span class="badge  bg-label-primary">Fluent</span>';
+                                                        break;
+                                                case 3:
+                                                        return '<span class="badge  bg-label-success">Advanced</span>';
+                                                        break;
+                                            }
+
+                                           // return data;
+                                        }
+                                },
+
+                                {"data":"readingLevel","render": function ( data, type, row ) {
+                                           // console.log(typeof data);
+                                            switch (data){
+                                                case 1:
+                                                        return '<span class="badge  bg-label-danger">Intermediate</span>';
+                                                        break;
+                                                case 2:
+                                                        return '<span class="badge  bg-label-primary">Fluent</span>';
+                                                        break;
+                                                case 3:
+                                                        return '<span class="badge  bg-label-success">Advanced</span>';
+                                                        break;
+                                            }
+
+                                           // return data;
+                                        }},
+                                {"data":"writingLevel","render": function ( data, type, row ) {
+                                           // console.log(typeof data);
+                                            switch (data){
+                                                case 1:
+                                                        return '<span class="badge  bg-label-danger">Intermediate</span>';
+                                                        break;
+                                                case 2:
+                                                        return '<span class="badge  bg-label-primary">Fluent</span>';
+                                                        break;
+                                                case 3:
+                                                        return '<span class="badge  bg-label-success">Advanced</span>';
+                                                        break;
+                                            }
+
+                                           // return data;
+                                        }},
+                                {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditLanguage("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveLanguage("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+                            ],
+
+                            "language": {
+                                        "paginate": {
+                                          "previous": "السابق",
+                                          "next":"التالي"
+                                        }
+                                      },
+
+                        })
+            */
+
+            $('#AddLanguage').click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/UpdateApplicantLanguage",
+                    data: {
+                        LanguageName: $('#LanguageName').find(":selected").val().trim(),
+                        SpeakingLevel: $('#SpeakingLevel').find(":selected").val(),
+                        ReadingLevel: $('#ReadingLevel').find(":selected").val(),
+                        WritingLevel: $('#WritingLevel').find(":selected").val(),
+
+                    },
+                    success: function (result) {
+                        // console.log(result);
+                        Lannguagetable.ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            })
+            EditLanguage = function (LanguageId) {
+                var url = "/ApplicantBrofiles/EditApplicantLanguage/" + LanguageId;
+                var Title = " Edite Language Skills Data"
+                var height = 300;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+
+
+            RemoveLanguage = function (langId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteApplicantLanguage",
+                    data: {
+                        Id: langId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        $("#ApplicantLanguages").DataTable().ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+            /*************************** Computer Skills ********************************************/
+            var ComputerSkillsColumns = [
+                { "data": "id" },
+                { "data": "computerSkill" },
+                { "data": "skill" },
+
+                { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick=EditComputerSkill("' + row.id + '");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveComputerSkill("' + row.id + '");> <i class="fas fa-trash"></i></a>' } }
+
+
+            ];
+
+            InitDataTable('ApplicantComputerSkills', 'GetApplicantComputerSkills', ComputerSkillsColumns);
+            ComputerSkillTable = $("#ApplicantComputerSkills").DataTable()
+
+            EditComputerSkill = function (ComputerSkillId) {
+                var url = "/ApplicantBrofiles/EditApplicantComputerSkill/" + ComputerSkillId;
+                var Title = " Edite Computer Skill Data";
+                var height = 280;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+
+
+            RemoveComputerSkill = function (ComputerSkillId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteApplicantComputerSkill",
+                    data: {
+                        Id: ComputerSkillId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        //ExperienceTable.ajax.reload();
+                        $("#ApplicantComputerSkills").DataTable().ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+
+            /*********************  Referee ****************** */
+            var RefereeColumns = [
+                { "data": "id" },
+                { "data": "refereeFirstNameEn" },
+                { "data": "refereeLastNameEn" },
+                { "data": "refereeOrganizationEn" },
+                { "data": "refereeJobTitleEn" },
+                { "data": "refereePrimaryPhone" },
+                { "data": "refereeEmail" },
+                { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick="EditReferee(' + row.id + ');"> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick="RemoveReferee(' + row.id + ');"> <i class="fas fa-trash"></i></a>' } }
+            ];
+            InitDataTable('ApplicantReferee', 'GetApplicantReferee', RefereeColumns);
+            /*
+                    Refereetable = $("#ApplicantReferee").DataTable({
+                            "serverSide": true,
+                            "filter":false,
+                            "processing": true,
+                            "bInfo" : false,
+                            "paging": false,
+                            "ordering": false,
+                            "searching": false,
+
+                            "ajax":{
+
+                                        "url" :"/ApplicantBrofiles/GetApplicantReferee",
+                                        "type":"GET",
+                                        "dataType":"json",
+                                        "dataSrc":"",
+
+
+                                    },
+                            "columnDefs": [
+                                        {
+                                            "targets": [0],
+                                            "visible": false,
+                                            "searchable": false
+                                        }
+                                    ],
+                            "columns": [
+                                        {"data":"id"},
+                                        {"data":"refereeFirstNameEn"},
+                                        {"data":"refereeLastNameEn"},
+                                        {"data":"refereeOrganizationEn"},
+                                        {"data":"refereeJobTitleEn"},
+                                        {"data":"refereePrimaryPhone"},
+                                        {"data":"refereeEmail"},
+                                        {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditReferee("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveReferee("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+                                    ],
+
+
+                            "language": {
+                                        "paginate": {
+                                          "previous": "السابق",
+                                          "next":"التالي"
+                                        }
+                                      },
+
+                        })
+            */
+            Refereetable = $("#ApplicantReferee").DataTable();
+            EditReferee = function (RefereeId) {
+                var url = "/ApplicantBrofiles/EditApplicantReferee/" + RefereeId;
+                var Title = " Edite Referee Data"
+                var height = 350;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+            RemoveReferee = function (RefereeId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteApplicantReferee",
+                    data: {
+                        Id: RefereeId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        Refereetable.ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+
+            /*********************  Documents ****************** */
+
+            var DocumentColumns = [
+                { "data": "id" },
+                {
+                    "data": "documentType", "render": function (data, type, row) {
+
+                        switch (data) {
+                            case 1:
+                                return 'Work Certificates';
+                                break;
+                            case 2:
+                                return 'Qualificaionts';
+                                break;
+                            case 3:
+                                return 'CV';
+                                break;
+                            case 4:
+                                return 'Cover Letter';
+                                break;
+                            case 5:
+                                return 'ID';
+                                break;
+                            case 6:
+                                return 'Passport';
+                                break;
+                        }
+
+
+                    }
+                },
+                //{"data":"documentType"},
+                { "data": "document" },
+                { "render": function (data, type, row) { return '<a href="#" class="btn btn-sm btn-warning" onclick="EditDoc(' + row.id + ');"> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick="RemoveDoc(' + row.id + ');"> <i class="fas fa-trash"></i></a>' } }
+            ];
+
+            InitDataTable('ApplicantDocuments', 'GetApplicantDocs', DocumentColumns);
+            /*
+                Documentstable = $("#ApplicantDocuments").DataTable({
+                        "serverSide": true,
+                        "filter":false,
+                        "processing": true,
+                        "bInfo" : false,
+                        "paging": false,
+                        "ordering": false,
+                        "searching": false,
+
+                        "ajax":{
+
+                                    "url" :"/ApplicantBrofiles/GetApplicantDocs",
+                                    "type":"GET",
+                                    "dataType":"json",
+                                    "dataSrc":"",
+
+
+                                },
+                        "columnDefs": [
+                                    {
+                                        "targets": [0],
+                                        "visible": false,
+                                        "searchable": false
+                                    }
+                                ],
+                        "columns": [
+                                    {"data":"id"},
+                                   {"data":"documentType"},
+                                    {"data":"document"},
+                                   // {"data":"DocumentDescription"},
+
+                                    {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditDoc("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveDoc("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+                                ],
+
+
+                        "language": {
+                                    "paginate": {
+                                      "previous": "السابق",
+                                      "next":"التالي"
+                                    }
+                                  },
+
+                    })
+            */
+            EditDoc = function (DocId) {
+                var url = "/ApplicantBrofiles/EditApplicantDocs/" + DocId;
+                var Title = " Edite Document Data"
+                var height = 200;
+                var width = 700;
+                PopupForm(url, Title, height, width);
+
+            }
+            RemoveDoc = function (DocId) {
+                //alert("Remove" + langId);
+                $.ajax({
+                    type: "POST",
+                    url: "/ApplicantBrofiles/DeleteDocs",
+                    data: {
+                        Id: DocId
+
+
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        Documentstable.ajax.reload();
+                    },
+                    error: function (req, status, error) {
+                        console.log(status);
+                        console.log(error);
+                    }
+                })
+
+            }
+
+            /*********************  Q1 Answers ******************
+        Q1table = $("#ApplicantQ1Table").DataTable({
+                "serverSide": true,
+                "filter":false,
+                "processing": true,
+                "bInfo" : false,
+                "paging": false,
+                "ordering": false,
+                "searching": false,
+
+                "ajax":{
+
+                            "url" :"/ApplicantBrofiles/GetApplicantQ1",
+                            "type":"GET",
+                            "dataType":"json",
+                            "dataSrc":"",
+
+
+                        },
+                "columnDefs": [
+                            {
+                                "targets": [0],
+                                "visible": false,
+                                "searchable": false
+                            }
+                        ],
+                "columns": [
+                            {"data":"id"},
+                            {"data":"personNameEn"},
+                            {"data":"personNameAr"},
+                            {"data":"relationType"},
+
+                            {"render":function(data, type, row){return '<a href="#" class="btn btn-sm btn-warning" onclick=EditQ1Answer("'+row.id+'");> <i class="fas fa-edit"></i></a><a href="#" class="btn btn-sm btn-danger" onclick=RemoveQ1Answer("'+row.id+'");> <i class="fas fa-trash"></i></a>'}}
+                        ],
+
+
+                "language": {
+                            "paginate": {
+                              "previous": "السابق",
+                              "next":"التالي"
+                            }
+                          },
+
+            })
+
+            EditQ1Answer =function(RefereeId){
+                var url="/ApplicantBrofiles/EditApplicantQ1/"+RefereeId;
+                var Title = " Edite Answer Data"
+                PopupForm(url,Title);
+
+            }
+            RemoveQ1Answer  = function(RefereeId){
+                //alert("Remove" + langId);
+                $.ajax({
+                    type:"POST",
+                    url:"/ApplicantBrofiles/DeleteApplicantQ1",
+                    data:{
+                        Id:RefereeId
+
+
+                    },
+                    success: function(result){
+                        console.log(result);
+                        Refereetable.ajax.reload();
+                    },
+                    error: function(req, status, error){
+                            console.log(status);
+                            console.log(error);
+                        }
+                })
+
+            }
+*****************************************/
+        })
+
+
+    </script>
+
+    <script>
+
+    </script>
+}

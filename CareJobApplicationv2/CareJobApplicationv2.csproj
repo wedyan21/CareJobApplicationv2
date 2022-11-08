@@ -1,0 +1,151 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-CareJobApplicationv2-DD25273D-8D78-44F4-83AE-3823A0554BA5</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Admin\Views\Shared\**" />
+    <Compile Remove="wwwroot\Scripts\**" />
+    <Content Remove="Areas\Admin\Views\Shared\**" />
+    <Content Remove="wwwroot\Scripts\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\Shared\**" />
+    <EmbeddedResource Remove="wwwroot\Scripts\**" />
+    <None Remove="Areas\Admin\Views\Shared\**" />
+    <None Remove="wwwroot\Scripts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.cs" />
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20221028154031_AddNewFieldsInIdentity.cs" />
+    <Compile Remove="Data\Migrations\20221028154031_AddNewFieldsInIdentity.Designer.cs" />
+    <Compile Remove="Data\Migrations\ApplicationDbContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\CandidatesManagement\Controllers\" />
+    <Folder Include="Areas\CandidatesManagement\Data\" />
+    <Folder Include="Areas\CandidatesManagement\Models\" />
+    <Folder Include="Areas\CandidatesManagement\Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\ApplicantBrofiles\AddApplicantEducation.cshtml" />
+    <None Include="Views\ApplicantBrofiles\AddApplicantLanguage.cshtml" />
+    <None Include="Views\ApplicantBrofiles\AddApplicantQ1.cshtml" />
+    <None Include="Views\ApplicantBrofiles\AddEditApplicantEducation.cshtml" />
+    <None Include="Views\ApplicantBrofiles\Create.cshtml" />
+    <None Include="Views\ApplicantBrofiles\CreateApplicantExperiences.cshtml" />
+    <None Include="Views\ApplicantBrofiles\CreateApplicantReferee.cshtml" />
+    <None Include="Views\ApplicantBrofiles\Delete.cshtml" />
+    <None Include="Views\ApplicantBrofiles\Details.cshtml" />
+    <None Include="Views\ApplicantBrofiles\Edit.cshtml" />
+    <None Include="Views\ApplicantBrofiles\EditApplicantEducation.cshtml" />
+    <None Include="Views\ApplicantBrofiles\EditApplicantExperiences.cshtml" />
+    <None Include="Views\ApplicantBrofiles\EditApplicantLanguage.cshtml" />
+    <None Include="Views\ApplicantBrofiles\EditApplicantQ1.cshtml" />
+    <None Include="Views\ApplicantBrofiles\EditApplicantReferee.cshtml" />
+    <None Include="Views\ApplicantBrofiles\Index.cshtml" />
+    <None Include="Views\ApplicantBrofiles\userProfile.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_AddApplicantComputerSkills.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantComputerSkills.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantDocuments.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantEducation.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantExperience.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantLanguages.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantProfile.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantQ1Answers.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_ApplicantReferee.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_Create.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_EditApplicantComputerSkills.cshtml" />
+    <None Include="Views\ApplicantBrofiles\_GetUserProfile.cshtml" />
+    <None Include="Views\CandidatesManagement\FinalJobCandidateAnalysis.cshtml" />
+    <None Include="Views\CandidatesManagement\Index.cshtml" />
+    <None Include="Views\CandidatesManagement\InterViewList.cshtml" />
+    <None Include="Views\CandidatesManagement\JobCandidates - Copy %282%29.cshtml" />
+    <None Include="Views\CandidatesManagement\JobCandidates - Copy.cshtml" />
+    <None Include="Views\CandidatesManagement\JobCandidates.cshtml" />
+    <None Include="Views\CandidatesManagement\JobCandidateScores.cshtml" />
+    <None Include="wwwroot\images\primary_logo_horizontal_min.svg" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.bootstrap.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.bootstrap.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.dataTables.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.dataTables.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.foundation.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.foundation.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.jqueryui.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.jqueryui.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.material.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.material.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.semanticui.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.semanticui.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.uikit.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\dataTables.uikit.min.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\jquery.dataTables.js" />
+    <None Include="wwwroot\lib\datatables1-10\js\jquery.dataTables.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap5.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bootstrap5.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bulma.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.bulma.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.dataTables.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.dataTables.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.foundation.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.foundation.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.jqueryui.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.jqueryui.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.semanticui.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\dataTables.semanticui.min.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\jquery.dataTables.js" />
+    <None Include="wwwroot\lib\DataTables\DataTables-1.12.1\js\jquery.dataTables.min.js" />
+    <None Include="wwwroot\lib\DataTables\datatables.js" />
+    <None Include="wwwroot\lib\DataTables\datatables.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\dataTables.editor.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\dataTables.editor.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap4.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap4.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap5.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bootstrap5.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bulma.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.bulma.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.dataTables.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.dataTables.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.foundation.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.foundation.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.jqueryui.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.jqueryui.min.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.semanticui.js" />
+    <None Include="wwwroot\lib\DataTables\Editor-2022-10-30-2.0.10\js\editor.semanticui.min.js" />
+    <None Include="wwwroot\lib\jquery-ajax-unobtrusive\jquery.unobtrusive-ajax.js" />
+    <None Include="wwwroot\lib\jquery-ajax-unobtrusive\jquery.unobtrusive-ajax.min.js" />
+    <None Include="wwwroot\lib\jqueryui\jquery-ui.js" />
+    <None Include="wwwroot\lib\jqueryui\jquery-ui.min.js" />
+  </ItemGroup>
+
+</Project>
